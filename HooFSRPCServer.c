@@ -95,7 +95,7 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     return xmlrpc_int_new(envP, 0);
 }
 
-static int hoofs_setxattr(const char *path, const char *name, const char *value,
+static int rpc_setxattr(const char *path, const char *name, const char *value,
                           size_t size, int flags) {
     printf("setxattr\n");
     return 0;
@@ -116,9 +116,27 @@ static int hoofs_utime(const char *path, struct utimbuf *ubuf) {
     return 0;
 }
 
-static int hoofs_truncate(const char *path, off_t newsize) {
-    printf("truncate\n");
-    return 0;
+static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_int *initNewSize;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initNewSize);
+    
+    const char *path = (char *)initPath;
+    off_t newsize = (off_t)(*initNewSize);
+    
+    size_t pathLen = getFullPathLength(path);
+    char fullPath[pathLen];
+    
+    getFullPath(path, fullPath, pathLen);
+    logMessage("Truncating file/directory %s\n", fullPath);
+   
+    if(truncate(fullPath, newsize) < 0) {
+        logMessage("truncate() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
+    
+    return xmlrpc_int_new(envP, 0);
 }
 
 static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
