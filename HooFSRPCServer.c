@@ -167,12 +167,12 @@ static int hoofs_open(const char *path, struct fuse_file_info *fi) {
   return 0;
 }
 
-static int hoofs_release(const char *path, struct fuse_file_info *fi) {
-    if (close((int)fi->fh) < 0) {
+static xmlrpc_value *rpc_release(xmlrpc_env * envP, const char *path, int fd) {
+    if (close(fd) < 0) {
     logMessage("closeOB() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
-  return 0;
+  return xmlrpc_int_new(envP, 0);
 }
 
 static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
@@ -213,7 +213,7 @@ static xmlrpc_value *rpc_read(xmlrpc_env *envP, const char *path, char *buf, siz
   // Go to file offset
   if (lseek((int) fd, offset, SEEK_SET) < 0) {
     logMessage("lseek() failed: %s\n", strerror(errno));
-    return xmlrpc_int_new(envP, errno);
+    return xmlrpc_int_new(envP, -errno);
   }
   // Read bytes
   ssize_t readBytes = read((int) fd, buf, size);
@@ -224,21 +224,21 @@ static xmlrpc_value *rpc_read(xmlrpc_env *envP, const char *path, char *buf, siz
   return xmlrpc_int_new(envP, (int) readBytes);
 }
 
-static int hoofs_write(xmlrpc_env *envP, const char *path, const char *buf, size_t size, off_t
+static xmlrpc_value *rpc_write(xmlrpc_env *envP, const char *path, const char *buf, size_t size, off_t
 offset, int fd) {
   logMessage("Writing to file\n");
   // Go to file offset
   if (lseek((int) fd, offset, SEEK_SET) < 0) {
     logMessage("lseek() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
   // Write bytes
   ssize_t writtenBytes = write((int) fd, buf, size);
   if (writtenBytes < 0) {
     logMessage("write() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
-  return (int) writtenBytes;
+  return xmlrpc_int_new(envP, (int) writtenBytes);
 }
 
 static struct fuse_operations hoofs_oper = {
