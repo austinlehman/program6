@@ -167,12 +167,12 @@ static int hoofs_open(const char *path, struct fuse_file_info *fi) {
   return 0;
 }
 
-static int hoofs_release(const char *path, struct fuse_file_info *fi) {
-    if (close((int)fi->fh) < 0) {
+static xmlrpc_value *rpc    _release(xmlrpc_env * envP, const char *path, int fd) {
+    if (close(fd) < 0) {
     logMessage("closeOB() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
-  return 0;
+  return xmlrpc_int_new(envP, 0);
 }
 
 static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
