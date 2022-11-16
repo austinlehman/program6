@@ -1,29 +1,23 @@
-/* A simple standalone XML-RPC server program written in C. */
-
-/* This server knows one RPC class (besides the system classes):
-   "sample.add".
-
-   The program takes one argument: the HTTP port number on which the server
-   is to accept connections, in decimal.
-
-   You can use the example program 'xmlrpc_sample_add_client' to send an RPC
-   to this server.
-
-   Example:
-
-   $ ./xmlrpc_sample_add_server 8080&
-   $ ./xmlrpc_sample_add_client
-
-   For more fun, run client and server in separate terminals and turn on
-   tracing for each:
-
-   $ export XMLRPC_TRACE_XML=1
-*/
+/************************************************
+*
+* Author: Joshua Hunter and Austin Lehman
+* Assignment: Program 6
+* Class: CSI 4337
+*
+************************************************/
 
 #define WIN32_LEAN_AND_MEAN  /* required by xmlrpc-c/server_abyss.h */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 #ifdef _WIN32
 #  include <windows.h>
 #  include <winsock2.h>
@@ -31,7 +25,7 @@
 #  include <unistd.h>
 #endif
 
-
+#include <xmlrpc.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_abyss.h>
@@ -43,22 +37,8 @@
   #define SLEEP(seconds) sleep(seconds);
 #endif
 
-/*
-  Hoofs (pronounce Hooves) Filesystem
-  gcc -Wall `pkg-config fuse --cflags --libs` hoofs.c -o hoofs
-*/
-//#define FUSE_USE_VERSION 26
-//#include <fuse.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <dirent.h>
 static char *fileSystemRoot;
+
 /*
  * Write given log message to console
  */
