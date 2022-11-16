@@ -167,7 +167,7 @@ static int hoofs_open(const char *path, struct fuse_file_info *fi) {
   return 0;
 }
 
-static xmlrpc_value *rpc    _release(xmlrpc_env * envP, const char *path, int fd) {
+static xmlrpc_value *rpc_release(xmlrpc_env * envP, const char *path, int fd) {
     if (close(fd) < 0) {
     logMessage("closeOB() failed: %s\n", strerror(errno));
     return xmlrpc_int_new(envP, -errno);
