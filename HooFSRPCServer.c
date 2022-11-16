@@ -53,18 +53,24 @@ static void logMessage(const char *format, ...) {
  * Compute the byte length of the full path string
  * from the root (fileSystemRoot + path)
  */
-static size_t getFullPathLength(const char *path) {
-    return strlen(fileSystemRoot) + strlen(path) + 1;
+static xmlrpc_value *getFullPathLength(xmlrpc_env *envP, const char *path) {                     //THESE WILL NEED TO BE UPDATED!!!!!!
+    size_t length = strlen(fileSystemRoot) + strlen(path) + 1;
+
+    xmlrpc_value* xmlLength = xmlrpc_i8_new(envP, length);
+    return xmlLength;
 }
 
 /*
  * Compute the full path from the root (fileSystemRoot + path).
  * We assume the user only wants up to n-1 bytes of the full path.
  */
-static char *getFullPath(const char *path, char *fullPath, size_t n) {
+static xmlrpc_value *getFullPath(xmlrpc_env *envP, const char *path, char *fullPath, size_t n) {       //THESE WILL NEED TO BE UPDATED!!!!!!
     strncpy(fullPath, fileSystemRoot, n);
     strncat(fullPath, path, n);
-    return fullPath;
+
+    xmlrpc_value* xmlPath = xmlrpc_string_new(envP, fullPath);
+
+    return xmlPath;
 }
 
 /*
@@ -159,8 +165,11 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
     
     // Compute the full path name
     size_t pathLen = getFullPathLength(path);
+
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
+
+
     logMessage("Opening file %s\n", fullPath);
     int fd = open(fullPath, flags);
     if (fd <= 0) {
@@ -188,19 +197,35 @@ static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const pa
     return xmlrpc_int_new(envP, 0);
 }
 
-static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
-    // Compute the full path name
-    size_t pathLen = getFullPathLength(path);
+static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, void *serverInfo, void *callInfo) {
+
+    xmlrpc_value* initPath;
+    xmlrpc_value* initMode;
+    xmlrpc_int* fi;
+
+    xmlrpc_parse_value(envP, paramArrayP, "(sii)", initPath, initMode, fi);
+
+    if(envP->fault_occurred) {
+        return NULL;
+    }
+
+    const char *path = (char *)initPath;
+    mode_t mode = (mode_t)initMode;
+
+    size_t pathLen = getFullPathLength(envP, path);
     char fullPath[pathLen];
-    getFullPath(path, fullPath, pathLen);
+    getFullPath(envP, path, fullPath, pathLen);
     logMessage("Creating file %s\n", fullPath);
+
     int fd = creat(fullPath, mode);
+
     if (fd < 0) {
         logMessage("creat() failed: %s\n", strerror(errno));
-        return -errno;
+        return xmlrpc_int_new(envP, -errno);
     }
-    fi->fh = (uint64_t) fd;
-    return 0;
+    fi = (xmlrpc_uint64_t*) &fd;
+
+    return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_unlink(xmlrpc_env *envP, const char *path) {
