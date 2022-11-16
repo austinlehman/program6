@@ -38,6 +38,10 @@
 #define SLEEP(seconds) sleep(seconds);
 #endif
 
+//Constants
+const int NUM_ARGS = 1;
+const int PORT_ARG = 1;
+
 static char *fileSystemRoot;
 
 /*
@@ -333,10 +337,21 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 3) {
-        fprintf(stderr, "Usage: %s <filesystem root> <fuse params>...\n", argv[0]);
+
+    //Check to make sure that a port is passed
+    if (argc - 1 == NUM_ARGS) {
+        fprintf(stderr, "Usage: %s <port>\n", argv[0]);
         exit(1);
     }
+
+    //int serverPort = stoi(argv[PORT_ARG]);
+
+    if(serverPort < 0 || serverPort > 65535) {
+        fprintf(stderr, "ERROR: Server port %d invalid. Port must be in the range 0 - 65535\n", serverPort);
+        exit(1);
+    }
+
+
     struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
     fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
     return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
