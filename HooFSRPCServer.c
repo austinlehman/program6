@@ -53,26 +53,18 @@ static void logMessage(const char *format, ...) {
  * Compute the byte length of the full path string
  * from the root (fileSystemRoot + path)
  */
-static xmlrpc_value *getFullPathLength(xmlrpc_env *envP, const char *path) {                     //THESE WILL NEED TO BE UPDATED!!!!!!
-    size_t length = strlen(fileSystemRoot) + strlen(path) + 1;
-
-    xmlrpc_value* xmlLength = xmlrpc_i8_new(envP, length);
-    return xmlLength;
+static size_t getFullPathLength(const char *path) {
+  return strlen(fileSystemRoot) + strlen(path) + 1;
 }
-
 /*
  * Compute the full path from the root (fileSystemRoot + path).
  * We assume the user only wants up to n-1 bytes of the full path.
  */
-static xmlrpc_value *getFullPath(xmlrpc_env *envP, const char *path, char *fullPath, size_t n) {       //THESE WILL NEED TO BE UPDATED!!!!!!
-    strncpy(fullPath, fileSystemRoot, n);
-    strncat(fullPath, path, n);
-
-    xmlrpc_value* xmlPath = xmlrpc_string_new(envP, fullPath);
-
-    return xmlPath;
+static char *getFullPath(const char *path, char *fullPath, size_t n) {
+  strncpy(fullPath, fileSystemRoot, n);
+  strncat(fullPath, path, n);
+  return fullPath;
 }
-
 /*
  * Get file attributes
  */
@@ -212,9 +204,9 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
     const char *path = (char *)initPath;
     mode_t mode = (mode_t)initMode;
 
-    size_t pathLen = getFullPathLength(envP, path);
+    size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
-    getFullPath(envP, path, fullPath, pathLen);
+    getFullPath(path, fullPath, pathLen);
     logMessage("Creating file %s\n", fullPath);
 
     int fd = creat(fullPath, mode);
