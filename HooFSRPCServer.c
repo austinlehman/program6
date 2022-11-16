@@ -60,6 +60,7 @@ static void logMessage(const char *format, ...) {
 static size_t getFullPathLength(const char *path) {
   return strlen(fileSystemRoot) + strlen(path) + 1;
 }
+
 /*
  * Compute the full path from the root (fileSystemRoot + path).
  * We assume the user only wants up to n-1 bytes of the full path.
