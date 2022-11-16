@@ -7,11 +7,11 @@ C_FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacO
 
 C_DEFINES = 
 
-C_INCLUDES = -I"/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/." 
+C_INCLUDES = -I"/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/." 
 
 CXX_FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -std=gnu++14
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I"/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/." 
+CXX_INCLUDES = -I"/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/." 
 

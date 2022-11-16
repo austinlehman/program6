@@ -43,10 +43,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6"
+CMAKE_SOURCE_DIR = "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug"
+CMAKE_BINARY_DIR = "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/program6.dir/depend.make
@@ -59,42 +59,42 @@ include CMakeFiles/program6.dir/flags.make
 
 CMakeFiles/program6.dir/HooFSRPCClient.cpp.o: CMakeFiles/program6.dir/flags.make
 CMakeFiles/program6.dir/HooFSRPCClient.cpp.o: ../HooFSRPCClient.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/program6.dir/HooFSRPCClient.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/program6.dir/HooFSRPCClient.cpp.o -c "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCClient.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/program6.dir/HooFSRPCClient.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/program6.dir/HooFSRPCClient.cpp.o -c "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCClient.cpp"
 
 CMakeFiles/program6.dir/HooFSRPCClient.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/program6.dir/HooFSRPCClient.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCClient.cpp" > CMakeFiles/program6.dir/HooFSRPCClient.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCClient.cpp" > CMakeFiles/program6.dir/HooFSRPCClient.cpp.i
 
 CMakeFiles/program6.dir/HooFSRPCClient.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/program6.dir/HooFSRPCClient.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCClient.cpp" -o CMakeFiles/program6.dir/HooFSRPCClient.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCClient.cpp" -o CMakeFiles/program6.dir/HooFSRPCClient.cpp.s
 
 CMakeFiles/program6.dir/HooFSRPCServer.c.o: CMakeFiles/program6.dir/flags.make
 CMakeFiles/program6.dir/HooFSRPCServer.c.o: ../HooFSRPCServer.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/program6.dir/HooFSRPCServer.c.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/program6.dir/HooFSRPCServer.c.o   -c "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCServer.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/program6.dir/HooFSRPCServer.c.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/program6.dir/HooFSRPCServer.c.o   -c "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCServer.c"
 
 CMakeFiles/program6.dir/HooFSRPCServer.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/program6.dir/HooFSRPCServer.c.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCServer.c" > CMakeFiles/program6.dir/HooFSRPCServer.c.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCServer.c" > CMakeFiles/program6.dir/HooFSRPCServer.c.i
 
 CMakeFiles/program6.dir/HooFSRPCServer.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/program6.dir/HooFSRPCServer.c.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCServer.c" -o CMakeFiles/program6.dir/HooFSRPCServer.c.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCServer.c" -o CMakeFiles/program6.dir/HooFSRPCServer.c.s
 
 CMakeFiles/program6.dir/main.cpp.o: CMakeFiles/program6.dir/flags.make
 CMakeFiles/program6.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/program6.dir/main.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/program6.dir/main.cpp.o -c "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/main.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/program6.dir/main.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/program6.dir/main.cpp.o -c "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/main.cpp"
 
 CMakeFiles/program6.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/program6.dir/main.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/main.cpp" > CMakeFiles/program6.dir/main.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/main.cpp" > CMakeFiles/program6.dir/main.cpp.i
 
 CMakeFiles/program6.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/program6.dir/main.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/main.cpp" -o CMakeFiles/program6.dir/main.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/main.cpp" -o CMakeFiles/program6.dir/main.cpp.s
 
 # Object files for target program6
 program6_OBJECTS = \
@@ -110,7 +110,7 @@ program6: CMakeFiles/program6.dir/HooFSRPCServer.c.o
 program6: CMakeFiles/program6.dir/main.cpp.o
 program6: CMakeFiles/program6.dir/build.make
 program6: CMakeFiles/program6.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable program6"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable program6"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/program6.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -123,6 +123,6 @@ CMakeFiles/program6.dir/clean:
 .PHONY : CMakeFiles/program6.dir/clean
 
 CMakeFiles/program6.dir/depend:
-	cd "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles/program6.dir/DependInfo.cmake" --color=$(COLOR)
+	cd "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles/program6.dir/DependInfo.cmake" --color=$(COLOR)
 .PHONY : CMakeFiles/program6.dir/depend
 

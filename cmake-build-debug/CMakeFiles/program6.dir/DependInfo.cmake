@@ -5,7 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCServer.c" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles/program6.dir/HooFSRPCServer.c.o"
+  "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCServer.c" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles/program6.dir/HooFSRPCServer.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
 
@@ -14,8 +14,8 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "../."
   )
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/HooFSRPCClient.cpp" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles/program6.dir/HooFSRPCClient.cpp.o"
-  "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/main.cpp" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/progFolder/program6/cmake-build-debug/CMakeFiles/program6.dir/main.cpp.o"
+  "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/HooFSRPCClient.cpp" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles/program6.dir/HooFSRPCClient.cpp.o"
+  "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/main.cpp" "/Users/joshuahunter/Desktop/Programs/4337 Programs/Program 6/p6/program6/cmake-build-debug/CMakeFiles/program6.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
