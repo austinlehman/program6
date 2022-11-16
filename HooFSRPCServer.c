@@ -190,7 +190,7 @@ static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi
   return 0;
 }
 
-static xmlrpc_value rpc_unlink(xmlrpc_env *envP, const char *path) {
+static xmlrpc_value *rpc_unlink(xmlrpc_env *envP, const char *path) {
 
   size_t pathLen = getFullPathLength(path);
   char fullPath[pathLen];
@@ -207,7 +207,7 @@ static xmlrpc_value rpc_unlink(xmlrpc_env *envP, const char *path) {
   return xmlrpc_int_new(envP, 0);
 }
 
-static int rpc_rmdir(xmlrpc_env *envP, const char *path) {
+static xmlrpc_value *rpc_rmdir(xmlrpc_env *envP, const char *path) {
   return rpc_unlink(envP, path);
 }
 
