@@ -190,22 +190,25 @@ static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi
   return 0;
 }
 
-static int hoofs_unlink(const char *path) {
-  // Compute the full path name
+static xmlrpc_value rpc_unlink(xmlrpc_env *envP, const char *path) {
+
   size_t pathLen = getFullPathLength(path);
   char fullPath[pathLen];
+
   getFullPath(path, fullPath, pathLen);
   logMessage("Deleting file/directory %s\n", fullPath);
+
   int retVal = remove(fullPath);
   if (retVal < 0) {
     logMessage("remove() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
-  return 0;
+
+  return xmlrpc_int_new(envP, 0);
 }
 
-static int hoofs_rmdir(const char *path) {
-  return hoofs_unlink(path);
+static int rpc_rmdir(xmlrpc_env *envP, const char *path) {
+  return rpc_unlink(envP, path);
 }
 
 static xmlrpc_value *rpc_read(xmlrpc_env *envP, const char *path, char *buf, size_t size, off_t offset, int fd) {
@@ -276,4 +279,3 @@ int main(int argc, char *argv[]) {
   fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
   return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
 }
-Annotations
