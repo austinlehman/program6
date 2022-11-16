@@ -89,18 +89,28 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
 /*
  * Get file attributes
  */
-static int hoofs_getattr(const char *path, struct stat *stbuf) {
-  // Compute the full path name
+static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
+
+    xmlrpc_value* initPath;
+    xmlrpc_value* initStBuf;
+
+    xmlrpc_parse_value(envP, paramArrayP, "(sS)", &initPath, &initStBuf);
+
+    const char *path = (char *)initPath;
+    struct stat *stbuf = (struct stat *)initStBuf;
+
   size_t pathLen = getFullPathLength(path);
   char fullPath[pathLen];
+
   getFullPath(path, fullPath, pathLen);
+
   logMessage("Getting attributes for %s\n", fullPath);
-  // Fetch file stats from local file system
   if (lstat(fullPath, stbuf) == -1) {
     logMessage("lstat() failed: %s\n", strerror(errno));
-    return -errno;
+      return xmlrpc_int_new(envP, -errno);
   }
-  return 0;
+
+    return xmlrpc_int_new(envP, 0);
 }
 
 static int hoofs_setxattr(const char *path, const char *name, const char *value,
