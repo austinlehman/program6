@@ -208,16 +208,15 @@ static int hoofs_rmdir(const char *path) {
   return hoofs_unlink(path);
 }
 
-static int hoofs_read(const char *path, char *buf, size_t size, off_t offset,
-struct fuse_file_info *fi) {
+static int rpc_read(xmlrpc_env *envP, const char *path, char *buf, size_t size, off_t offset, int fd) {
   logMessage("Reading from open file\n");
   // Go to file offset
-  if (lseek((int) fi->fh, offset, SEEK_SET) < 0) {
+  if (lseek((int) fd, offset, SEEK_SET) < 0) {
     logMessage("lseek() failed: %s\n", strerror(errno));
     return -errno;
   }
   // Read bytes
-  ssize_t readBytes = read((int) fi->fh, buf, size);
+  ssize_t readBytes = read((int) fd, buf, size);
   if (readBytes < 0) {
     logMessage("read() failed: %s\n", strerror(errno));
     return -errno;
