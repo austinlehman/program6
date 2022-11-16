@@ -121,8 +121,21 @@ static int hoofs_truncate(const char *path, off_t newsize) {
     return 0;
 }
 
-static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
-                         offset, struct fuse_file_info *fi) {
+static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_value *initBuf;
+    xmlrpc_int *initOffset;
+    xmlrpc_int *initFD;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "ssii", &initPath, &initBuf, &initOffset, &initFD);
+    
+    const char *path = (char *) initPath;
+    void *buf = (char *) initBuf;
+    //fuse_fill_dir_t filler;
+    off_t offset = (off_t) (*initOffset);
+    //struct fuse_file_info *fi;
+    int *fd = (int *)initFD;
+    
     // Compute the full path name
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
@@ -136,9 +149,12 @@ static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
     }
     struct dirent *dirEntry;
     while ((dirEntry = readdir(dirPtr)) != NULL) {
+        /*
         if (filler(buf, dirEntry->d_name, NULL, 0) != 0) {
             return -ENOMEM;
         }
+         */
+        strncat(buf, dirEntry->d_name, strlen(dirEntry->d_name)); //almost definitely wrong lol
     }
     closedir(dirPtr);
     return 0;
@@ -195,7 +211,7 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
     xmlrpc_value* initMode;
     xmlrpc_int* fi;
 
-    xmlrpc_parse_value(envP, paramArrayP, "(sii)", initPath, initMode, fi);
+    xmlrpc_parse_value(envP, paramArrayP, "(sii)", &initPath, &initMode, &fi);
 
     if(envP->fault_occurred) {
         return NULL;
