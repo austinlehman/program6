@@ -137,9 +137,19 @@ static int rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP
     return 0;
 }
 
-static int rpc_chmod(const char *path, mode_t mode) {
-    printf("chmod\n");
-    return 0;
+static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_int *initMode;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initMode);
+    
+    const char *path = (char *) initPath;
+    mode_t mode = (mode_t) (*initMode);
+    if(chmod(path, mode) < 0) {
+        logMessage("chmod() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
+    return xmlrpc_int_new(envP, 0);
 }
 
 static int rpc_chown(const char *path, uid_t uid, gid_t gid) {
