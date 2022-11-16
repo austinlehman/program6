@@ -151,15 +151,11 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
     xmlrpc_int *fileInfo;
     xmlrpc_int *fileFlags;
     
-    /*
-    const char *path;
-    int *fi;
-    unsigned int flags;
-    */
+    
     xmlrpc_decompose_value(envP, paramArrayP, "sii", &pathVal, &fileInfo, &fileFlags);
     const char *path = (char *)pathVal;
     int *fi = (int *) fileInfo;
-    int flags = *((int *) fileFlags);
+    unsigned int flags = *((int *) fileFlags);
     
     // Compute the full path name
     size_t pathLen = getFullPathLength(path);
@@ -175,7 +171,16 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
     return xmlrpc_int_new(envP, 0);
 }
 
-static xmlrpc_value *rpc_release(xmlrpc_env * envP, const char *path, int fd) {
+static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    
+    xmlrpc_value *initPath;
+    xmlrpc_int *initFd;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initFd);
+    
+    const char *path = (char *) initPath;
+    int fd = *((int *) initFd);
+    
     if (close(fd) < 0) {
         logMessage("closeOB() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
