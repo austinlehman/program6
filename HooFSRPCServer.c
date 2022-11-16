@@ -31,11 +31,12 @@
 #  include <unistd.h>
 #endif
 
+
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_abyss.h>
 
-#include "config.h"  /* information about this build environment */
+//#include "config.h"  /* information about this build environment */
 
 
 #ifdef _WIN32
