@@ -244,23 +244,6 @@ offset, int fd) {
   return xmlrpc_int_new(envP, (int) writtenBytes);
 }
 
-static struct fuse_operations hoofs_oper = {
-  .getattr = hoofs_getattr,
-  .setxattr = hoofs_setxattr,
-  .chmod = hoofs_chmod,
-  .chown = hoofs_chown,
-  .utime = hoofs_utime,
-  .truncate = hoofs_truncate,
-  .readdir = hoofs_readdir,
-  .open = hoofs_open,
-  .release = hoofs_release,
-  .create = hoofs_create,
-  .unlink = hoofs_unlink,
-  .rmdir = hoofs_rmdir,
-  .read = hoofs_read,
-  .write = hoofs_write,
-};
-
 static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
 *outargs) {
   if (key == FUSE_OPT_KEY_NONOPT && fileSystemRoot == NULL) {
