@@ -152,19 +152,19 @@ offset, struct fuse_file_info *fi) {
   return 0;
 }
 
-static int hoofs_open(const char *path, struct fuse_file_info *fi) {
+static xmlrpc_value *rpc_open(xmlrpc_env *envP, const char *path, int *fi, unsigned int flags) {
   // Compute the full path name
   size_t pathLen = getFullPathLength(path);
   char fullPath[pathLen];
   getFullPath(path, fullPath, pathLen);
   logMessage("Opening file %s\n", fullPath);
-  int fd = open(fullPath, fi->flags);
+  int fd = open(fullPath, flags);
   if (fd <= 0) {
     logMessage("open() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
-  fi->fh = (uint64_t) fd;
-  return 0;
+  *fi = fd;
+  return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_release(xmlrpc_env * envP, const char *path, int fd) {
