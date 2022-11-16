@@ -228,7 +228,13 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
     return xmlrpc_int_new(envP, 0);
 }
 
-static xmlrpc_value *rpc_unlink(xmlrpc_env *envP, const char *path) {
+static xmlrpc_value *rpc_unlink(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    
+    xmlrpc_value *initPath;
+    xmlrpc_decompose_value(envP, paramArrayP, "s", &initPath);
+    
+    const char *path = (char *)initPath;
+    
     
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
@@ -245,8 +251,8 @@ static xmlrpc_value *rpc_unlink(xmlrpc_env *envP, const char *path) {
     return xmlrpc_int_new(envP, 0);
 }
 
-static xmlrpc_value *rpc_rmdir(xmlrpc_env *envP, const char *path) {
-    return rpc_unlink(envP, path);
+static xmlrpc_value *rpc_rmdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    return rpc_unlink(envP, paramArrayP, serverInfo, channelInfo);
 }
 
 static xmlrpc_value *rpc_read(xmlrpc_env *envP, const char *path, char *buf, size_t size, off_t offset, int fd) {
