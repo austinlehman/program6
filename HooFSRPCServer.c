@@ -208,32 +208,32 @@ static int hoofs_rmdir(const char *path) {
   return hoofs_unlink(path);
 }
 
-static int rpc_read(xmlrpc_env *envP, const char *path, char *buf, size_t size, off_t offset, int fd) {
+static xmlrpc_value *rpc_read(xmlrpc_env *envP, const char *path, char *buf, size_t size, off_t offset, int fd) {
   logMessage("Reading from open file\n");
   // Go to file offset
   if (lseek((int) fd, offset, SEEK_SET) < 0) {
     logMessage("lseek() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, errno);
   }
   // Read bytes
   ssize_t readBytes = read((int) fd, buf, size);
   if (readBytes < 0) {
     logMessage("read() failed: %s\n", strerror(errno));
-    return -errno;
+    return xmlrpc_int_new(envP, -errno);
   }
-  return (int) readBytes;
+  return xmlrpc_int_new(envP, (int) readBytes);
 }
 
-static int hoofs_write(const char *path, const char *buf, size_t size, off_t
-offset, struct fuse_file_info *fi) {
+static int hoofs_write(xmlrpc_env *envP, const char *path, const char *buf, size_t size, off_t
+offset, int fd) {
   logMessage("Writing to file\n");
   // Go to file offset
-  if (lseek((int) fi->fh, offset, SEEK_SET) < 0) {
+  if (lseek((int) fd, offset, SEEK_SET) < 0) {
     logMessage("lseek() failed: %s\n", strerror(errno));
     return -errno;
   }
   // Write bytes
-  ssize_t writtenBytes = write((int) fi->fh, buf, size);
+  ssize_t writtenBytes = write((int) fd, buf, size);
   if (writtenBytes < 0) {
     logMessage("write() failed: %s\n", strerror(errno));
     return -errno;
