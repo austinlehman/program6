@@ -19,6 +19,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include <sys/xattr.h>
+
 #ifdef _WIN32
 #  include <windows.h>
 #  include <winsock2.h>
@@ -102,23 +104,50 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     return xmlrpc_int_new(envP, 0);
 }
 
-static int rpc_setxattr(const char *path, const char *name, const char *value,
-                          size_t size, int flags) {
-    printf("setxattr\n");
+static int rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_value *initName;
+    xmlrpc_value *initValue;
+    xmlrpc_int *initSize;
+    xmlrpc_int *initFlags;
+    
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "sssii", &initPath, &initName, &initValue, &initSize, &initFlags);
+    
+    const char *path = (char *)initPath;
+    const char *name = (char *)initName;
+    const char *value = (char *)initValue;
+    size_t size = (size_t) (*initSize);
+    int flags = (int) (*initFlags);
+    
+    //macOS version
+    if(setxattr(path, name, value, size, 0, flags) < 0) {
+        logMessage("setxattr() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
+    
+    //linux version
+    /*
+    if(setxattr(path, name, value, size,flags) < 0) {
+        logMessage("setxattr() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
+     */
+    
     return 0;
 }
 
-static int hoofs_chmod(const char *path, mode_t mode) {
+static int rpc_chmod(const char *path, mode_t mode) {
     printf("chmod\n");
     return 0;
 }
 
-static int hoofs_chown(const char *path, uid_t uid, gid_t gid) {
+static int rpc_chown(const char *path, uid_t uid, gid_t gid) {
     printf("chown\n");
     return 0;
 }
 
-static int hoofs_utime(const char *path, struct utimbuf *ubuf) {
+static int rpc_utime(const char *path, struct utimbuf *ubuf) {
     printf("utime\n");
     return 0;
 }
@@ -347,6 +376,7 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
     return xmlrpc_int_new(envP, (int) writtenBytes);
 }
 
+/*
 static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
                          *outargs) {
     if (key == FUSE_OPT_KEY_NONOPT && fileSystemRoot == NULL) {
@@ -355,6 +385,7 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
     }
     return 1;
 }
+ */
 
 static struct xmlrpc_method_info3 const rpcgetattrMethodInfo = {
         .methodName = "rpc_getattr",
