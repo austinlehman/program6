@@ -230,7 +230,21 @@ static xmlrpc_value *rpc_rmdir(xmlrpc_env *const envP,  xmlrpc_value *const para
     return rpc_unlink(envP, paramArrayP, serverInfo, channelInfo);
 }
 
-static xmlrpc_value *rpc_read(xmlrpc_env *envP, const char *path, char *buf, size_t size, off_t offset, int fd) {
+static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_value *initBuf;
+    xmlrpc_int *initSize;
+    xmlrpc_int *initOffset;
+    xmlrpc_int *initFD;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "ssiii", &initPath, &initBuf, &initSize, &initOffset, &initFD);
+    
+    const char *path = (char *) initPath;
+    char *buf = (char *) initBuf;
+    size_t size = (size_t) (*initSize); //may need to be changed to unsigned int??
+    off_t offset = (off_t) (*initOffset);
+    int fd = (int) (*initFD); //may need to be an int *????
+    
     logMessage("Reading from open file\n");
     // Go to file offset
     if (lseek((int) fd, offset, SEEK_SET) < 0) {
