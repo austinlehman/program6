@@ -41,6 +41,8 @@
 //Constants
 const int NUM_ARGS = 1;
 const int PORT_ARG = 1;
+const int PORTMIN = 0;
+const int PORTMAX = 65535;
 
 static char *fileSystemRoot;
 
@@ -345,14 +347,15 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    //int serverPort = stoi(argv[PORT_ARG]);
+    int serverPort;
+    sscanf(argv[PORT_ARG], "%d", &serverPort);
 
-    if(serverPort < 0 || serverPort > 65535) {
+    if(serverPort < PORTMIN || serverPort > PORTMAX) {
         fprintf(stderr, "ERROR: Server port %d invalid. Port must be in the range 0 - 65535\n", serverPort);
-        exit(1);
+        exit(2);
     }
 
-
+    //ADDRESS LATER
     struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
     fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
     return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
