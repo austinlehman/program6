@@ -172,7 +172,6 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
     xmlrpc_int *fileInfo;
     xmlrpc_int *fileFlags;
     
-    
     xmlrpc_decompose_value(envP, paramArrayP, "sii", &pathVal, &fileInfo, &fileFlags);
     const char *path = (char *)pathVal;
     int *fi = (int *) fileInfo;
@@ -341,22 +340,38 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
 
 int main(int argc, char *argv[]) {
 
-    //Check to make sure that a port is passed
+    /* Check to make sure that a port is passed */
     if (argc - 1 == NUM_ARGS) {
         fprintf(stderr, "Usage: %s <port>\n", argv[0]);
         exit(1);
     }
 
+    /* Validate port */
     int serverPort;
     sscanf(argv[PORT_ARG], "%d", &serverPort);
-
     if(serverPort < PORTMIN || serverPort > PORTMAX) {
         fprintf(stderr, "ERROR: Server port %d invalid. Port must be in the range 0 - 65535\n", serverPort);
         exit(2);
     }
 
-    //ADDRESS LATER
-    struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
-    fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
-    return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
+    /* XML-RPC Server Params */
+    xmlrpc_server_abyss_parms serverParams;
+    xmlrpc_registry* serverRegistry;
+    xmlrpc_env env;
+
+    /* Initialize environment */
+    xmlrpc_env_init(&env);
+    serverRegistry = xmlrpc_registry_new(&env);
+
+    /* Append m3 RPC methods to registry */
+    xmlrpc_registry_add_method3(&env, serverRegistry, &rpcgetattrMethodInfo);         //ADD ALL 14 OF THESE
+
+    /* Set server parameters */
+    serverParams.registryP = serverRegistry;
+    serverParams.port_number = serverPort;
+    serverParams.log_file_name = "/tmp/xmlrpc_log";
+
+    xmlrpc_server_abyss(&env, &serverParams, XMLRPC_APSIZE(log_file_name));
+
+    return 0;
 }
