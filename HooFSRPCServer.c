@@ -225,21 +225,22 @@ struct fuse_file_info *fi) {
   return (int) readBytes;
 }
 
-static int hoofs_write(const char *path, const char *buf, size_t size, off_t
-offset, struct fuse_file_info *fi) {
-  logMessage("Writing to file\n");
-  // Go to file offset
-  if (lseek((int) fi->fh, offset, SEEK_SET) < 0) {
-    logMessage("lseek() failed: %s\n", strerror(errno));
-    return -errno;
-  }
-  // Write bytes
-  ssize_t writtenBytes = write((int) fi->fh, buf, size);
-  if (writtenBytes < 0) {
-    logMessage("write() failed: %s\n", strerror(errno));
-    return -errno;
-  }
-  return (int) writtenBytes;
+static int rpc_write(xmlrpc_env *envPtr, const char *path, const char *buf, size_t size, off_t offset, xmlrpc_int *fi) {
+
+    logMessage("Writing to file\n");
+
+    if (lseek((int) fi, offset, SEEK_SET) < 0) {
+        logMessage("lseek() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envPtr, -errno);
+    }
+
+    ssize_t writtenBytes = write((int) fi, buf, size);
+    if (writtenBytes < 0) {
+        logMessage("write() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envPtr, -errno);
+    }
+
+    return (int) writtenBytes;
 }
 
 static struct fuse_operations hoofs_oper = {
@@ -268,13 +269,14 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
   return 1;
 }
     
-int main(int argc, char *argv[]) {
-  if (argc < 3) {
-    fprintf(stderr, "Usage: %s <filesystem root> <fuse params>...\n", argv[0]);
-    exit(1);
-  }
-  struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
-  fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
-  return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
+int main (int argc, char *argv[]) {
+
+    if (argc - 1 == 1) {
+        fprintf(stderr, "Usage: %s <port>\n", argv[0]);
+        exit(1);
+    }
+
+    struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
+    fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
+    return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
 }
-Annotations
