@@ -42,7 +42,7 @@ int HooFSRPCClient::create(const char *path, int mode) {
     int ret = -1;
 
     try {
-        ourClient.call(serverURL, _create, "si", &res, path, mode);
+        ourClient.call(serverURL, _create, "s", &res, path);
         ret = value_int(res);
     }
     catch (exception const& e) {
@@ -55,7 +55,17 @@ int HooFSRPCClient::create(const char *path, int mode) {
 }
 
 int HooFSRPCClient::unlink(const char *path) {
-
+    int ret = -1;
+    
+    try {
+        ourClient.call(serverURL, _unlink, "s", &res, path);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
 }
 
 int HooFSRPCClient::release(int fd) {
