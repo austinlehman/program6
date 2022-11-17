@@ -6,10 +6,13 @@
 *
 ************************************************/
 
+//General Includes
 #include <iostream>
-#include "HooFSRPCClient.h"
 #include <fcntl.h>
+using namespace std;
 
+//RPC Client Include
+#include "HooFSRPCClient.h"
 
 //Constants
 const int NUM_ARGS = 2;
@@ -19,28 +22,29 @@ const int PORT_ARG = 2;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
-using namespace std;
-
 int main(int argc, const char * argv[]) {
 
-    /* Check Number of ARGS */
+    //Check Number of arguments
     if (argc - 1 != NUM_ARGS) {
         fprintf(stderr, "Usage: %s <server name/ip> <server port>\n", argv[PROG_ARG]);
         exit(1);
     }
 
-    /* Validate server?????? */                     //FIX OR VALIDATE
+    //Register server
     string serverIP = argv[IP_ARG];
 
-    /* Validate port */
+    //Register and validate port
     int serverPort;
     sscanf(argv[PORT_ARG], "%d", &serverPort);
     if(serverPort < PORTMIN || serverPort > PORTMAX) {
         fprintf(stderr, "ERROR: Server port %d invalid. Port must be in the range 0 - 65535\n", serverPort);
-        exit(3);
+        exit(2);
     }
 
+    //Initialize client for RPC communication
     HooFSRPCClient client(serverIP, serverPort);
+
+    //Testing RPC Calls
     client.create("hi.txt", 0777);
     int fd = client.open("hi.txt", O_RDWR);
     client.write(fd, 3, 0, "hi\0");
@@ -50,5 +54,6 @@ int main(int argc, const char * argv[]) {
     //cout << str << endl;
     client.release(fd);
     //client.unlink("hi.txt");
+
     return 0;
 }
