@@ -101,17 +101,37 @@ int HooFSRPCClient::rmdir(const char *path) {
 }
 
 string HooFSRPCClient::read(int fd, int size, int offset) {
-    xmlrpc_c::value response;
-    ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
 
-    string retBuffer = (string) value_string(response);
+    string retBuffer = "";
+
+    try {
+        xmlrpc_c::value response;
+        ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
+        retBuffer = (string) value_string(response);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
     return retBuffer;
 }
 
 int HooFSRPCClient::write(int fd, int size, int offset, const char *data) {
-    xmlrpc_c::value response;
-    ourClient.call(serverURL, _write, "iiis", &response, fd, size, offset, data);
 
-    int retBytesWritten = xmlrpc_c::value_int(response);
+    int retBytesWritten = -1;
+
+    try {
+        xmlrpc_c::value response;
+        ourClient.call(serverURL, _write, "iiis", &response, fd, size, offset, data);
+        retBytesWritten = xmlrpc_c::value_int(response);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
     return retBytesWritten;
 }
