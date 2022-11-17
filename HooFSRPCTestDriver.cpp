@@ -6,10 +6,10 @@
 //
 
 #include <iostream>
-#include "server.h"
+#include "HooFSRPCClient.h"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    HooFSRPCClient client("localhost", 8180);
+    client.create("hi.txt", 02);
     return 0;
 }
