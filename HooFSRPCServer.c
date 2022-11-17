@@ -327,7 +327,7 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
     }
     fi = &fd;
 
-    return xmlrpc_int_new(envP, fi);
+    return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_unlink(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {

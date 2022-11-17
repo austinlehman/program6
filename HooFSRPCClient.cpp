@@ -37,7 +37,7 @@ int HooFSRPCClient::create(const char *path, int mode) {
 
     try {
         int fd;
-        ourClient.call(serverURL, _create, "(sii)", &res, path, mode, fd);
+        ourClient.call(serverURL, _create, "sii", &res, path, mode, fd);
         ret = value_int(res);
     }
     catch (exception const& e) {
