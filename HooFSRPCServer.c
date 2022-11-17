@@ -428,76 +428,6 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
 }
  */
 
-static struct xmlrpc_method_info3 const rpcgetattrMethodInfo = {
-        .methodName = "rpc_getattr",
-        .methodFunction = &rpc_getattr,
-};
-
-static struct xmlrpc_method_info3 const rpcsetxattrMethodInfo = {
-        .methodName = "rpc_setxattr",
-        .methodFunction = &rpc_setxattr,
-};
-
-static struct xmlrpc_method_info3 const rpcchmodMethodInfo = {
-        .methodName = "rpc_chmod",
-        .methodFunction = &rpc_chmod,
-};
-
-static struct xmlrpc_method_info3 const rpcchownMethodInfo = {
-        .methodName = "rpc_chown",
-        .methodFunction = &rpc_chown,
-};
-
-static struct xmlrpc_method_info3 const rpcutimeMethodInfo = {
-        .methodName = "rpc_utime",
-        .methodFunction = &rpc_utime,
-};
-
-static struct xmlrpc_method_info3 const rpctruncateMethodInfo = {
-        .methodName = "rpc_truncate",
-        .methodFunction = &rpc_truncate,
-};
-
-static struct xmlrpc_method_info3 const rpcreaddirMethodInfo = {
-        .methodName = "rpc_readdir",
-        .methodFunction = &rpc_readdir,
-};
-
-static struct xmlrpc_method_info3 const rpcopenMethodInfo = {
-        .methodName = "rpc_open",
-        .methodFunction = &rpc_open,
-};
-
-static struct xmlrpc_method_info3 const rpcreleaseMethodInfo = {
-        .methodName = "rpc_release",
-        .methodFunction = &rpc_release,
-};
-
-static struct xmlrpc_method_info3 const rpccreateMethodInfo = {
-        .methodName = "rpc_create",
-        .methodFunction = &rpc_create,
-};
-
-static struct xmlrpc_method_info3 const rpcunlinkMethodInfo = {
-        .methodName = "rpc_unlink",
-        .methodFunction = &rpc_unlink,
-};
-
-static struct xmlrpc_method_info3 const rpcrmdirMethodInfo = {
-        .methodName = "rpc_rmdir",
-        .methodFunction = &rpc_rmdir,
-};
-
-static struct xmlrpc_method_info3 const rpcreadMethodInfo = {
-        .methodName = "rpc_read",
-        .methodFunction = &rpc_read,
-};
-
-static struct xmlrpc_method_info3 const rpcwriteMethodInfo = {
-        .methodName = "rpc_write",
-        .methodFunction = &rpc_write,
-};
-
 int main(int argc, char *argv[]) {
 
     /* Check to make sure that a port is passed */
@@ -505,6 +435,76 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Usage: %s <port>\n", argv[0]);
         exit(1);
     }
+
+    struct xmlrpc_method_info3 const rpcgetattrMethodInfo = {
+            .methodName = "rpc.getattr",
+            .methodFunction = &rpc_getattr,
+    };
+
+    struct xmlrpc_method_info3 const rpcsetxattrMethodInfo = {
+            .methodName = "rpc.setxattr",
+            .methodFunction = &rpc_setxattr,
+    };
+
+    struct xmlrpc_method_info3 const rpcchmodMethodInfo = {
+            .methodName = "rpc.chmod",
+            .methodFunction = &rpc_chmod,
+    };
+
+    struct xmlrpc_method_info3 const rpcchownMethodInfo = {
+            .methodName = "rpc.chown",
+            .methodFunction = &rpc_chown,
+    };
+
+    struct xmlrpc_method_info3 const rpcutimeMethodInfo = {
+            .methodName = "rpc.utime",
+            .methodFunction = &rpc_utime,
+    };
+
+    struct xmlrpc_method_info3 const rpctruncateMethodInfo = {
+            .methodName = "rpc.truncate",
+            .methodFunction = &rpc_truncate,
+    };
+
+    struct xmlrpc_method_info3 const rpcreaddirMethodInfo = {
+            .methodName = "rpc.readdir",
+            .methodFunction = &rpc_readdir,
+    };
+
+    struct xmlrpc_method_info3 const rpcopenMethodInfo = {
+            .methodName = "rpc.open",
+            .methodFunction = &rpc_open,
+    };
+
+    struct xmlrpc_method_info3 const rpcreleaseMethodInfo = {
+            .methodName = "rpc.release",
+            .methodFunction = &rpc_release,
+    };
+
+    struct xmlrpc_method_info3 const rpccreateMethodInfo = {
+            .methodName = "rpc.create",
+            .methodFunction = &rpc_create,
+    };
+
+    struct xmlrpc_method_info3 const rpcunlinkMethodInfo = {
+            .methodName = "rpc.unlink",
+            .methodFunction = &rpc_unlink,
+    };
+
+    struct xmlrpc_method_info3 const rpcrmdirMethodInfo = {
+            .methodName = "rpc.rmdir",
+            .methodFunction = &rpc_rmdir,
+    };
+
+    struct xmlrpc_method_info3 const rpcreadMethodInfo = {
+            .methodName = "rpc.read",
+            .methodFunction = &rpc_read,
+    };
+
+    struct xmlrpc_method_info3 const rpcwriteMethodInfo = {
+            .methodName = "rpc.write",
+            .methodFunction = &rpc_write,
+    };
 
     /* Validate port */
     int serverPort;
