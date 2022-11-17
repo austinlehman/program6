@@ -258,12 +258,10 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
 
 static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *pathVal;
-    xmlrpc_int *fileInfo;
     xmlrpc_int fileFlags;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &pathVal, &fileInfo, &fileFlags);
+    xmlrpc_decompose_value(envP, paramArrayP, "(si)", &pathVal, &fileFlags);
     const char *path = (char *)pathVal;
-    int *fi = (int *) fileInfo;
     unsigned int flags = (unsigned int) fileFlags;
     
     // Compute the full path name
@@ -279,8 +277,8 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
         logMessage("open() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    *fi = fd;
-    return xmlrpc_int_new(envP, 0);
+    
+    return xmlrpc_int_new(envP, fd);
 }
 
 static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
@@ -402,7 +400,8 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
     
     logMessage("Writing to file\n");
     // Go to file offset
-    if (lseek((int) fd, offset, SEEK_SET) < 0) {
+    
+    if (lseek(fd, offset, SEEK_SET) < 0) {
         logMessage("lseek() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
