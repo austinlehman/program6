@@ -97,7 +97,20 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
 }
 
 int HooFSRPCClient::rmdir(const char *path) {
-
+    int ret = -1;
+    
+    try {
+        value res;
+        ourClient.call(serverURL, _unlink, "s", &res, path);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+    
+    return ret;
 }
 
 string HooFSRPCClient::read(int fd, int size, int offset) {
