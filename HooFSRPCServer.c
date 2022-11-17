@@ -303,9 +303,9 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
 
     xmlrpc_value* initPath;
     xmlrpc_value* initMode;
-    xmlrpc_int *fi;
+    //xmlrpc_int *fi;
 
-    xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &initPath, &initMode, &fi);
+    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initMode);
 
     if(envP->fault_occurred) {
         return NULL;
@@ -325,9 +325,9 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
         logMessage("creat() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    fi = &fd;
+    //fi = &fd;
 
-    return xmlrpc_int_new(envP, 0);
+    return xmlrpc_int_new(envP, fd);
 }
 
 static xmlrpc_value *rpc_unlink(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
