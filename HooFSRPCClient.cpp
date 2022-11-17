@@ -88,13 +88,16 @@ int HooFSRPCClient::release(int fd) {
     return ret;
 }
 
+
 struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
     xmlrpc_c::value response;
     ourClient.call(serverURL, _getAttr, "sS", &response, path, stbuf);
 
-    //char* retBuffer = xmlrpc_c::value_string(response);                       //This needs to be fixed
-    return retStat;
+    
+    //This needs to be fixed
+    return stbuf;
 }
+ 
 
 int HooFSRPCClient::rmdir(const char *path) {
     int ret = -1;
