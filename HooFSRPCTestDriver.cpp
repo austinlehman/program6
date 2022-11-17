@@ -19,6 +19,8 @@ const int PORT_ARG = 2;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
+using namespace std;
+
 int main(int argc, const char * argv[]) {
 
     /* Check Number of ARGS */
@@ -41,7 +43,9 @@ int main(int argc, const char * argv[]) {
     HooFSRPCClient client(serverIP, serverPort);
     client.create("hi.txt", 0777);
     int fd = client.open("hi.txt", O_RDWR);
-    client.write(fd, 3, 0, "hi\n");
+    client.write(fd, 3, 0, "hi\0");
+    string str = client.read(fd, 3, 0);
+    cout << str << endl;
     //client.unlink("hi.txt");
     return 0;
 }

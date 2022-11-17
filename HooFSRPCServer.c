@@ -370,12 +370,14 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
     
     logMessage("Reading from open file\n");
     // Go to file offset
-    if (lseek((int) fd, offset, SEEK_SET) < 0) {
+    if (lseek(fd, offset, SEEK_SET) < 0) {
         logMessage("lseek() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
+   
     // Read bytes
     ssize_t readBytes = read((int) fd, buf, size);
+    printf("%s\n", buf);
     if (readBytes < 0) {
         logMessage("read() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
