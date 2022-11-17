@@ -46,7 +46,7 @@ int main(int argc, const char * argv[]) {
     client.write(fd, 3, 0, "hi\0");
     //string str = client.read(fd, 3, 0);
     //cout << str << endl;
-    
+    client.release(fd);
     //client.unlink("hi.txt");
     return 0;
 }

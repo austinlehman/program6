@@ -282,14 +282,15 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
 }
 
 static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
-    xmlrpc_int *initFd;
+    xmlrpc_int initFd;
     
     xmlrpc_decompose_value(envP, paramArrayP, "(i)", &initFd);
     
-    int fd = *((int *) initFd);
+    int fd = (int) initFd;
     
+    logMessage("Closing file at %d\n", fd);
     if (close(fd) < 0) {
-        logMessage("closeOB() failed: %s\n", strerror(errno));
+        logMessage("close() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
     return xmlrpc_int_new(envP, 0);
@@ -400,7 +401,7 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
     off_t offset = (off_t) initOffset;
     int fd = (int) initFD; //may need to be an int *????
     
-    logMessage("Writing to file\n");
+    logMessage("Writing %s to file descriptor %d\n", data, fd);
     // Go to file offset
     
     if (lseek(fd, offset, SEEK_SET) < 0) {
