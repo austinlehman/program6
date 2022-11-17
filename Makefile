@@ -20,4 +20,4 @@ HooFSRPCTestDriver.o: HooFSRPCTestDriver.cpp
 HooFSRPCClient.o: HooFSRPCClient.cpp
 	g++ -std=c++11 -c -I. $(INCLUDE) HooFSRPCClient.cpp 
 clean:
-	rm *.o hoofsrpcserver
+	rm *.o hoofsrpcserver hoofsrpctestdriver
