@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <utime.h>
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -74,6 +75,7 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
   strncat(fullPath, path, n);
   return fullPath;
 }
+
 /*
  * Get file attributes
  */
@@ -108,8 +110,8 @@ static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const p
     xmlrpc_value *initPath;
     xmlrpc_value *initName;
     xmlrpc_value *initValue;
-    xmlrpc_int *initSize;
-    xmlrpc_int *initFlags;
+    xmlrpc_int initSize;
+    xmlrpc_int initFlags;
     
     
     xmlrpc_decompose_value(envP, paramArrayP, "sssii", &initPath, &initName, &initValue, &initSize, &initFlags);
@@ -117,8 +119,8 @@ static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const p
     const char *path = (char *)initPath;
     const char *name = (char *)initName;
     const char *value = (char *)initValue;
-    size_t size = (size_t) (*initSize);
-    int flags = (int) (*initFlags);
+    size_t size = (size_t) initSize;
+    int flags = (int) initFlags;
     
     logMessage("calling setxattr on %s with name %s, value %s, size %d, and flags %d", path, name, value, size, flags);
     //macOS version
@@ -140,12 +142,12 @@ static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const p
 
 static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
-    xmlrpc_int *initMode;
+    xmlrpc_int initMode;
     
     xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initMode);
     
     const char *path = (char *) initPath;
-    mode_t mode = (mode_t) (*initMode);
+    mode_t mode = (mode_t) initMode;
     
     logMessage("calling chmod on %s with mode %d\n", path, mode);
     if(chmod(path, mode) < 0) {
@@ -157,36 +159,48 @@ static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const para
 
 static xmlrpc_value *rpc_chown(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
-    xmlrpc_int *initUID;
-    xmlrpc_int *initGID;
+    xmlrpc_int initUID;
+    xmlrpc_int initGID;
     
     xmlrpc_decompose_value(envP, paramArrayP, "sii", &initPath, &initUID, &initGID);
     
     const char *path = (char *)initPath;
-    uid_t uid = (uid_t) (*initUID);
-    gid_t gid = (gid_t) (*initGID);
+    uid_t uid = (uid_t) initUID;
+    gid_t gid = (gid_t) initGID;
     
     logMessage("Calling chown on %s\n", path);
     if(chown(path, uid, gid) < 0) {
         logMessage("chmod() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    return 0;
+    return xmlrpc_int_new(envP, 0);
 }
 
-static int rpc_utime(const char *path, struct utimbuf *ubuf) {
-    printf("utime\n");
-    return 0;
+static xmlrpc_value *rpc_utime(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_value *initUbuf;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "sS", &initPath, &initUbuf);
+    
+    const char *path = (char *)initPath;
+    struct utimbuf *ubuf = (struct utimbuf *)initUbuf;
+    
+    logMessage("calling utime on %s", path);
+    if(utime(path, ubuf) < 0) {
+        logMessage("utime() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
+    return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
-    xmlrpc_int *initNewSize;
+    xmlrpc_int initNewSize;
     
     xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initNewSize);
     
     const char *path = (char *)initPath;
-    off_t newsize = (off_t)(*initNewSize);
+    off_t newsize = (off_t) initNewSize;
     
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
@@ -205,7 +219,7 @@ static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const p
 static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
     xmlrpc_value *initBuf;
-    xmlrpc_int *initOffset;
+    xmlrpc_int initOffset;
     xmlrpc_int *initFD;
     
     xmlrpc_decompose_value(envP, paramArrayP, "ssii", &initPath, &initBuf, &initOffset, &initFD);
@@ -213,7 +227,7 @@ static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP,
     const char *path = (char *) initPath;
     void *buf = (char *) initBuf;
     //fuse_fill_dir_t filler;
-    off_t offset = (off_t) (*initOffset);
+    off_t offset = (off_t) initOffset;
     //struct fuse_file_info *fi;
     int *fd = (int *)initFD;
     
@@ -244,12 +258,12 @@ static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP,
 static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *pathVal;
     xmlrpc_int *fileInfo;
-    xmlrpc_int *fileFlags;
+    xmlrpc_int fileFlags;
     
     xmlrpc_decompose_value(envP, paramArrayP, "sii", &pathVal, &fileInfo, &fileFlags);
     const char *path = (char *)pathVal;
     int *fi = (int *) fileInfo;
-    unsigned int flags = *((int *) fileFlags);
+    unsigned int flags = (unsigned int) fileFlags;
     
     // Compute the full path name
     size_t pathLen = getFullPathLength(path);
@@ -289,7 +303,7 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
 
     xmlrpc_value* initPath;
     xmlrpc_value* initMode;
-    xmlrpc_int* fi;
+    xmlrpc_int *fi;
 
     xmlrpc_parse_value(envP, paramArrayP, "(sii)", &initPath, &initMode, &fi);
 
@@ -298,7 +312,7 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
     }
 
     const char *path = (char *)initPath;
-    mode_t mode = (mode_t)initMode;
+    mode_t mode = *((mode_t*)(initMode));
 
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
@@ -311,7 +325,7 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
         logMessage("creat() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    fi = (xmlrpc_uint64_t*) &fd;
+    fi = &fd;
 
     return xmlrpc_int_new(envP, 0);
 }
@@ -346,17 +360,17 @@ static xmlrpc_value *rpc_rmdir(xmlrpc_env *const envP,  xmlrpc_value *const para
 static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
     xmlrpc_value *initBuf;
-    xmlrpc_int *initSize;
-    xmlrpc_int *initOffset;
-    xmlrpc_int *initFD;
+    xmlrpc_int initSize;
+    xmlrpc_int initOffset;
+    xmlrpc_int initFD;
     
     xmlrpc_decompose_value(envP, paramArrayP, "ssiii", &initPath, &initBuf, &initSize, &initOffset, &initFD);
     
     const char *path = (char *) initPath;
     char *buf = (char *) initBuf;
-    size_t size = (size_t) (*initSize); //may need to be changed to unsigned int??
-    off_t offset = (off_t) (*initOffset);
-    int fd = (int) (*initFD); //may need to be an int *????
+    size_t size = (size_t) initSize; //may need to be changed to unsigned int??
+    off_t offset = (off_t) initOffset;
+    int fd = (int) initFD; //may need to be an int *????
     
     logMessage("Reading from open file\n");
     // Go to file offset
@@ -376,17 +390,17 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
 static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
     xmlrpc_value *initBuf;
-    xmlrpc_int *initSize;
-    xmlrpc_int *initOffset;
-    xmlrpc_int *initFD;
+    xmlrpc_int initSize;
+    xmlrpc_int initOffset;
+    xmlrpc_int initFD;
     
     xmlrpc_decompose_value(envP, paramArrayP, "ssiii", &initPath, &initBuf, &initSize, &initOffset, &initFD);
     
     const char *path = (char *) initPath;
     const char *buf = (char *) initBuf;
-    size_t size = (size_t) (*initSize); //may need to be changed to unsigned int??
-    off_t offset = (off_t) (*initOffset);
-    int fd = (int) (*initFD); //may need to be an int *????
+    size_t size = (size_t) initSize; //may need to be changed to unsigned int??
+    off_t offset = (off_t) initOffset;
+    int fd = (int) initFD; //may need to be an int *????
     
     logMessage("Writing to file\n");
     // Go to file offset
