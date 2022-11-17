@@ -14,6 +14,11 @@
 #include <sys/dir.h>
 #include <sys/stat.h>
 
+#include <xmlrpc-c/girerr.hpp>
+#include <xmlrpc-c/base.hpp>
+#include <xmlrpc-c/client_simple.hpp>
+
+
 using namespace std;
 
 class HooFSRPCClient {

@@ -216,7 +216,7 @@ static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const p
     return xmlrpc_int_new(envP, 0);
 }
 
-static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
     xmlrpc_value *initBuf;
     xmlrpc_int initOffset;
@@ -240,7 +240,7 @@ static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP,
     DIR *dirPtr = opendir(fullPath);
     if (dirPtr == NULL) {
         logMessage("opendir() failed: %s\n", strerror(errno));
-        return -errno;
+        return xmlrpc_int_new(envP, -errno);
     }
     struct dirent *dirEntry;
     while ((dirEntry = readdir(dirPtr)) != NULL) {
@@ -252,7 +252,7 @@ static int rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP,
         strncat(buf, dirEntry->d_name, strlen(dirEntry->d_name)); //almost definitely wrong lol
     }
     closedir(dirPtr);
-    return 0;
+    return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
