@@ -83,8 +83,8 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     
     xmlrpc_value* initPath;
     xmlrpc_value* initStBuf;
-    
-    xmlrpc_parse_value(envP, paramArrayP, "(sS)", &initPath, &initStBuf);
+
+    xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, &initStBuf);
     if(envP->fault_occurred) {
         return NULL;
     }
@@ -305,7 +305,7 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
     xmlrpc_value* initMode;
     xmlrpc_int *fi;
 
-    xmlrpc_parse_value(envP, paramArrayP, "(sii)", &initPath, &initMode, &fi);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &initPath, &initMode, &fi);
 
     if(envP->fault_occurred) {
         return NULL;
