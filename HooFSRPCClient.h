@@ -42,7 +42,6 @@ string const _truncate("rpc.truncate");
 class HooFSRPCClient {
     string serverURL;
     clientSimple ourClient;
-    value res;
     
     public:
         HooFSRPCClient(string ip, int serverPort);
