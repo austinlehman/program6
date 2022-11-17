@@ -68,6 +68,7 @@ int HooFSRPCClient::unlink(const char *path) {
     } catch (...) {
         cerr << "Client threw unexpected error." << endl;
     }
+    return ret;
 }
 
 int HooFSRPCClient::release(int fd) {
@@ -92,11 +93,11 @@ int HooFSRPCClient::rmdir(const char *path) {
 
 }
 
-char* HooFSRPCClient::read(int fd, int size, int offset) {
+string HooFSRPCClient::read(int fd, int size, int offset) {
     xmlrpc_c::value response;
     ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
 
-    char* retBuffer = xmlrpc_c::value_string(response);
+    string retBuffer = (string) value_string(response);
     return retBuffer;
 }
 
