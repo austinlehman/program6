@@ -22,9 +22,18 @@ HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
 }
 
 dirent *HooFSRPCClient::readdir(const char *path) {
-    xmlrpc_c::value response;
-    ourClient.call(serverURL, _readdir, "", &response);
-    cout << xmlrpc_c::value_int(response) << endl;
+
+    //Read a directory listing
+    try {
+        xmlrpc_c::value response;
+        ourClient.call(serverURL, _readdir, "", &response);
+        cout << xmlrpc_c::value_int(response) << endl;
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
     
     return nullptr;
 }

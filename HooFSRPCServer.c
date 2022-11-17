@@ -8,6 +8,7 @@
 
 #define WIN32_LEAN_AND_MEAN  /* required by xmlrpc-c/server_abyss.h */
 
+/* General includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,7 +20,6 @@
 #include <utime.h>
 #include <dirent.h>
 #include <sys/stat.h>
-
 #include <sys/xattr.h>
 
 #ifdef _WIN32
@@ -29,23 +29,24 @@
 #  include <unistd.h>
 #endif
 
+/* XMLRPC-C Includes */
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_abyss.h>
 
-//#include "config.h"  /* information about this build environment */
 #ifdef _WIN32
 #define SLEEP(seconds) SleepEx(seconds * 1000, 1);
 #else
 #define SLEEP(seconds) sleep(seconds);
 #endif
 
-//Constants
+/* Constants */
 const int NUM_ARGS = 1;
 const int PORT_ARG = 1;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
+/* Global variables */
 static char *fileSystemRoot = "./";
 
 /*
@@ -62,7 +63,6 @@ static void logMessage(const char *format, ...) {
  * from the root (fileSystemRoot + path)
  */
 static size_t getFullPathLength(const char *path) {
-    
     return strlen(fileSystemRoot) + strlen(path) + 1;
 }
 
@@ -80,23 +80,25 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
  * Get file attributes
  */
 static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
-    
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value* initPath;
     xmlrpc_value* initStBuf;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, &initStBuf);
     if(envP->fault_occurred) {
         return NULL;
     }
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
     struct stat *stbuf = (struct stat *)initStBuf;
-    
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
-    
     getFullPath(path, fullPath, pathLen);
-    
+
+    /* Get attributes */
     logMessage("Getting attributes for %s\n", fullPath);
     if (lstat(fullPath, stbuf) == -1) {
         logMessage("lstat() failed: %s\n", strerror(errno));
@@ -107,15 +109,18 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
 }
 
 static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
     xmlrpc_value *initName;
     xmlrpc_value *initValue;
     xmlrpc_int initSize;
     xmlrpc_int initFlags;
-    
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(sssii)", &initPath, &initName, &initValue, &initSize, &initFlags);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
     const char *name = (char *)initName;
     const char *value = (char *)initValue;
@@ -123,92 +128,105 @@ static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const p
     int flags = (int) initFlags;
     
     logMessage("calling setxattr on %s with name %s, value %s, size %d, and flags %d", path, name, value, size, flags);
-    //macOS version
-    /*
-     if(setxattr(path, name, value, size, 0, flags) < 0) {
-     logMessage("setxattr() failed: %s\n", strerror(errno));
-     return xmlrpc_int_new(envP, -errno);
-     }
-     */
     
-    //linux version
+    /* Set attributes */
     if(setxattr(path, name, value, size,flags) < 0) {
         logMessage("setxattr() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
     
-    
     return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
     xmlrpc_int initMode;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initMode);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *) initPath;
     mode_t mode = (mode_t) initMode;
-    
+
+    /* Chmod */
     logMessage("calling chmod on %s with mode %d\n", path, mode);
     if(chmod(path, mode) < 0) {
         logMessage("chmod() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
+
     return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_chown(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
     xmlrpc_int initUID;
     xmlrpc_int initGID;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &initPath, &initUID, &initGID);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
     uid_t uid = (uid_t) initUID;
     gid_t gid = (gid_t) initGID;
-    
+
+    /* Chown */
     logMessage("Calling chown on %s\n", path);
     if(chown(path, uid, gid) < 0) {
         logMessage("chmod() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
+
     return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_utime(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
     xmlrpc_value *initUbuf;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, &initUbuf);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
     struct utimbuf *ubuf = (struct utimbuf *)initUbuf;
-    
+
+    /* Utime */
     logMessage("calling utime on %s", path);
     if(utime(path, ubuf) < 0) {
         logMessage("utime() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
+
     return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
     xmlrpc_int initNewSize;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initNewSize);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
     off_t newsize = (off_t) initNewSize;
-    
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
-    
     getFullPath(path, fullPath, pathLen);
+
+    /* Truncate */
     logMessage("Truncating file/directory %s\n", fullPath);
-    
     if(truncate(fullPath, newsize) < 0) {
         logMessage("truncate() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
@@ -218,26 +236,27 @@ static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const p
 }
 
 static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
     xmlrpc_value *initBuf;
     xmlrpc_int initOffset;
     xmlrpc_int *initFD;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(ssii)", &initPath, &initBuf, &initOffset, &initFD);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *) initPath;
     void *buf = (char *) initBuf;
-    //fuse_fill_dir_t filler;
     off_t offset = (off_t) initOffset;
-    //struct fuse_file_info *fi;
     int *fd = (int *)initFD;
-    
-    // Compute the full path name
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
+
+    /* Read from directory */
     logMessage("Reading directory for %s\n", fullPath);
-    // Fetch the directory information
     DIR *dirPtr = opendir(fullPath);
     if (dirPtr == NULL) {
         logMessage("opendir() failed: %s\n", strerror(errno));
@@ -245,32 +264,32 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
     }
     struct dirent *dirEntry;
     while ((dirEntry = readdir(dirPtr)) != NULL) {
-        /*
-         if (filler(buf, dirEntry->d_name, NULL, 0) != 0) {
-         return -ENOMEM;
-         }
-         */
         strncat(buf, dirEntry->d_name, strlen(dirEntry->d_name)); //almost definitely wrong lol
     }
     closedir(dirPtr);
+
     return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *pathVal;
     xmlrpc_int fileFlags;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(si)", &pathVal, &fileFlags);
     const char *path = (char *)pathVal;
     unsigned int flags = (unsigned int) fileFlags;
     
     // Compute the full path name
     size_t pathLen = getFullPathLength(path);
-    
+
+    /* Unload from decomposition */
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
     
-    
+    /* Open file based on specified path */
     logMessage("Opening file %s\n", fullPath);
     int fd = open(fullPath, flags);
     if (fd <= 0) {
@@ -282,12 +301,17 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
 }
 
 static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_int initFd;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(i)", &initFd);
-    
+
+    /* Unload from decomposition */
     int fd = (int) initFd;
-    
+
+    /* Close file */
     logMessage("Closing file at %d\n", fd);
     if (close(fd) < 0) {
         logMessage("close() failed: %s\n", strerror(errno));
@@ -297,28 +321,27 @@ static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const pa
 }
 
 static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, void *serverInfo, void *callInfo) {
-    
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value* initPath;
     xmlrpc_int initMode;
-    
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initMode);
-    
     if(envP->fault_occurred) {
         return NULL;
     }
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
     mode_t mode = (mode_t) initMode;
-    
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
-    
+
+    /* Create file at specified path */
     logMessage("Creating file %s\n", fullPath);
-    
     int fd = creat(fullPath, mode);
-    
     if (fd < 0) {
         logMessage("creat() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
@@ -328,19 +351,23 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
 }
 
 static xmlrpc_value *rpc_unlink(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
-    
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(s)", &initPath);
-    
+
+    /* Unload from decomposition */
     const char *path = (char *)initPath;
-    
-    
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
-    
+
+    /* Identify full path */
     getFullPath(path, fullPath, pathLen);
+
+    /* Unlink the file */
     logMessage("Deleting file/directory %s\n", fullPath);
-    
     int retVal = remove(fullPath);
     if (retVal < 0) {
         logMessage("remove() failed: %s\n", strerror(errno));
@@ -355,30 +382,30 @@ static xmlrpc_value *rpc_rmdir(xmlrpc_env *const envP,  xmlrpc_value *const para
 }
 
 static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_int initFD;
     xmlrpc_int initSize;
     xmlrpc_int initOffset;
 
-    
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(iii)", &initFD, &initSize, &initOffset);
-    
-    
-    size_t size = (size_t) initSize; //may need to be changed to unsigned int??
+
+    /* Unload from decomposition */
+    size_t size = (size_t) initSize;
     off_t offset = (off_t) initOffset;
     char buf[size];
-    
-    int fd = (int) initFD; //may need to be an int *????
-    
+    int fd = (int) initFD;
+
+    /* Seek to position in file */
     logMessage("Reading from open file\n");
-    // Go to file offset
     if (lseek(fd, offset, SEEK_SET) < 0) {
         logMessage("lseek() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
    
-    // Read bytes
+    /* Read specified number of bytes */
     ssize_t readBytes = read(fd, buf, size);
-    
     if (readBytes < 0) {
         logMessage("read() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
@@ -389,31 +416,35 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
 
 static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
 
+    /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_int initFD;
     xmlrpc_int initSize;
     xmlrpc_int initOffset;
     xmlrpc_value *initData;
-    
+
+    /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(isii)", &initFD, &initData, &initSize, &initOffset);
 
+    /* Unload from decomposition */
     const char *data = (char *) initData;
-    size_t size = (size_t) initSize; //may need to be changed to unsigned int??
+    size_t size = (size_t) initSize;
     off_t offset = (off_t) initOffset;
-    int fd = (int) initFD; //may need to be an int *????
-    
+    int fd = (int) initFD;
+
+    /* Seek to position in file */
     logMessage("Writing %s to file descriptor %d\n", data, fd);
-    // Go to file offset
-    
     if (lseek(fd, offset, SEEK_SET) < 0) {
         logMessage("lseek() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    // Write bytes
+
+    /* Identify written bytes */
     ssize_t writtenBytes = write((int) fd, data, size);
     if (writtenBytes < 0) {
         logMessage("write() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
+
     return xmlrpc_int_new(envP, (int) writtenBytes);
 }
 
