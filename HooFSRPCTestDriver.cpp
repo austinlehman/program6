@@ -44,8 +44,9 @@ int main(int argc, const char * argv[]) {
     client.create("hi.txt", 0777);
     int fd = client.open("hi.txt", O_RDWR);
     client.write(fd, 3, 0, "hi\0");
-    string str = client.read(fd, 3, 0);
-    cout << str << endl;
+    //string str = client.read(fd, 3, 0);
+    //cout << str << endl;
+    
     //client.unlink("hi.txt");
     return 0;
 }

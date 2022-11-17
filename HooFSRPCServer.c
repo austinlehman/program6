@@ -376,8 +376,8 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
     }
    
     // Read bytes
-    ssize_t readBytes = read((int) fd, buf, size);
-    printf("%s\n", buf);
+    ssize_t readBytes = read(fd, buf, size);
+    
     if (readBytes < 0) {
         logMessage("read() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
