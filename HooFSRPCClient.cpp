@@ -24,7 +24,7 @@ HooFSRPCClient::~HooFSRPCClient() {
 
 }
 
-dirent *HooFSRPCClient::readdir(const char *path) {
+dirent *HooFSRPCClient::readdir(const char *path) {                 //FIX
     xmlrpc_c::value response;
     ourClient.call(serverURL, _readdir, "", &response);
     cout << xmlrpc_c::value_int(response) << endl;
@@ -71,7 +71,11 @@ int HooFSRPCClient::rmdir(const char *path) {
 }
 
 int HooFSRPCClient::read(int fd, int size, int offset) {
+    xmlrpc_c::value response;
+    ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
 
+    string retFile = xmlrpc_c::value_string(response);
+    return retFile;
 }
 
 int HooFSRPCClient::write(int fd, const char *buf, int size, int offset) {
