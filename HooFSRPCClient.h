@@ -9,6 +9,7 @@
 #ifndef HooFSRPCClient_h
 #define HooFSRPCClient_h
 
+//General Includes
 #include <stdio.h>
 #include <string>
 #include <sys/types.h>
@@ -16,14 +17,15 @@
 #include <sys/stat.h>
 #include <cstdlib>
 #include <cstring>
+using namespace std;
 
+//XMLRPC-C Includes
 #include <xmlrpc-c/girerr.hpp>
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/client_simple.hpp>
-
-using namespace std;
 using namespace xmlrpc_c;
 
+//Server action method links
 string const _readdir("rpc.readdir");
 string const _open("rpc.open");
 string const _create("rpc.create");
@@ -39,6 +41,10 @@ string const _chown("rpc.chown");
 string const _utime("rpc.utime");
 string const _truncate("rpc.truncate");
 
+/**
+ * HooFDRPCClient is the client to implement the 
+ * \version 1.0
+ */
 class HooFSRPCClient {
     string serverURL;
     clientSimple ourClient;
