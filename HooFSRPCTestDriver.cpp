@@ -11,5 +11,6 @@
 int main(int argc, const char * argv[]) {
     HooFSRPCClient client("localhost", 8180);
     client.create("hi.txt", 02);
+    client.unlink("hi.txt");
     return 0;
 }
