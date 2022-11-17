@@ -393,7 +393,7 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
     xmlrpc_int initOffset;
     xmlrpc_value *initData;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "(iiis)", &initFD, &initSize, &initOffset, &initData);
+    xmlrpc_decompose_value(envP, paramArrayP, "(isii)", &initFD, &initData, &initSize, &initOffset);
 
     const char *data = (char *) initData;
     size_t size = (size_t) initSize; //may need to be changed to unsigned int??

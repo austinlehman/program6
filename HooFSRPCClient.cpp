@@ -137,7 +137,7 @@ int HooFSRPCClient::write(int fd, int size, int offset, const char *data) {
 
     try {
         xmlrpc_c::value response;
-        ourClient.call(serverURL, _write, "iiis", &response, fd, size, offset, data);
+        ourClient.call(serverURL, _write, "isii", &response, fd, data, size, offset);
         retBytesWritten = xmlrpc_c::value_int(response);
     }
     catch (exception const& e) {
