@@ -26,6 +26,7 @@ class HooFSRPCClient {
     int cPort;
     int serverPort;
     string serverIP;
+    string serverURL;
     
     const string _readdir = "rpc.readdir";
     const string _open = "rpc.open";

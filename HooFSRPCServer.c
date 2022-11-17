@@ -29,7 +29,6 @@
 #  include <unistd.h>
 #endif
 
-#include <xmlrpc.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/server.h>
 #include <xmlrpc-c/server_abyss.h>
@@ -124,18 +123,19 @@ static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const p
     
     logMessage("calling setxattr on %s with name %s, value %s, size %d, and flags %d", path, name, value, size, flags);
     //macOS version
+    /*
     if(setxattr(path, name, value, size, 0, flags) < 0) {
         logMessage("setxattr() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
+     */
     
     //linux version
-    /*
     if(setxattr(path, name, value, size,flags) < 0) {
         logMessage("setxattr() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-     */
+     
     
     return xmlrpc_int_new(envP, 0);
 }
@@ -420,7 +420,7 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
 int main(int argc, char *argv[]) {
 
     /* Check to make sure that a port is passed */
-    if (argc - 1 == NUM_ARGS) {
+    if (argc - 1 != NUM_ARGS) {
         fprintf(stderr, "Usage: %s <port>\n", argv[0]);
         exit(1);
     }

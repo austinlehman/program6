@@ -19,6 +19,7 @@ HooFSRPCClient::HooFSRPCClient(string ip, int serverPort, int clientPort) {
     this->cPort = clientPort;
     this->serverPort = serverPort;
     this->serverIP = ip;
+    
 }
 
 HooFSRPCClient::~HooFSRPCClient() {
