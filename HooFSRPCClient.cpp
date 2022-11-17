@@ -118,9 +118,9 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
     //Call the server to get attributes
     try {
         xmlrpc_c::value response;
-        ourClient.call(serverURL, _getAttr, "sS", &response, path, stbuf);
+        ourClient.call(serverURL, _getAttr, "sS", &response, path, *stbuf);
         xmlrpc_c::value_struct res(response);
-        ret = (struct stat*)(&res);
+        ret = (struct stat *)(&res);
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
