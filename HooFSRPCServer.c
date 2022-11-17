@@ -80,7 +80,6 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
  * Get file attributes
  */
 static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
-    
     xmlrpc_value* initPath;
     xmlrpc_value* initStBuf;
     
@@ -365,7 +364,7 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
     
     size_t size = (size_t) initSize; //may need to be changed to unsigned int??
     off_t offset = (off_t) initOffset;
-    char buf[size];
+    char buf[(int) size];
     
     int fd = (int) initFD; //may need to be an int *????
     
@@ -377,7 +376,7 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
     }
    
     // Read bytes
-    ssize_t readBytes = read(fd, buf, size);
+    ssize_t readBytes = read(fd, buf, (int) size);
     
     if (readBytes < 0) {
         logMessage("read() failed: %s\n", strerror(errno));
