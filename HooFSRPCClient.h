@@ -14,48 +14,48 @@
 #include <sys/types.h>
 #include <sys/dir.h>
 #include <sys/stat.h>
+#include <cstdlib>
+#include <cstring>
 
 #include <xmlrpc-c/girerr.hpp>
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/client_simple.hpp>
 
-
 using namespace std;
+using namespace xmlrpc_c;
+
+string const _readdir("rpc.readdir");
+string const _open("rpc.open");
+string const _create("rpc.create");
+string const _unlink("rpc.unlink");
+string const _release("rpc.release");
+string const _getAttr("rpc.getattr");
+string const _rmdir("rpc.rmdir");
+string const _read("rpc.read");
+string const _write("rpc.write");
+string const _setxattr("rpc.setxattr");
+string const _chmod("rpc.chmod");
+string const _chown("rpc.chown");
+string const _utime("rpc.utime");
+string const _truncate("rpc.truncate");
 
 class HooFSRPCClient {
-    int cPort;
-    int serverPort;
-    string serverIP;
     string serverURL;
+    clientSimple ourClient;
+    value res;
     
-    const string _readdir = "rpc.readdir";
-    const string _open = "rpc.open";
-    const string _create = "rpc.create";
-    const string _unlink = "rpc.unlink";
-    const string _release = "rpc.release";
-    const string _getAttr = "rpc.getattr";
-    const string _rmdir = "rpc.rmdir";
-    const string _read = "rpc.read";
-    const string _write = "rpc.write";
-    const string _setxattr = "rpc.setxattr";
-    const string _chmod = "rpc.chmod";
-    const string _chown = "rpc.chown";
-    const string _utime = "rpc.utime";
-    const string _truncate = "rpc.truncate";
-    
-    
-    HooFSRPCClient(string ip, int serverPort, int clientPort);
-    ~HooFSRPCClient();
-    
-    dirent *readdir(char *path);
-    int open(char *path, int flags);
-    int create(char *path, int mode);
-    int unlink(char *path);
-    int release(int fd);
-    struct stat *getAttr(char *path, struct stat *stbuf);
-    int rmdir(char *path);
-    int read(int fd, int size, int offset);
-    int write(int fd, char *buf, int size, int offset);
+    public:
+        HooFSRPCClient(string ip, int serverPort);
+        ~HooFSRPCClient();
+        dirent *readdir(const char *path);
+        int open(const char *path, int flags);
+        int create(const char *path, int mode);
+        int unlink(const char *path);
+        int release(int fd);
+        struct stat *getAttr(const char *path, struct stat *stbuf);
+        int rmdir(const char *path);
+        int read(int fd, int size, int offset);
+        int write(int fd, const char *buf, int size, int offset);
 };
 
 #endif /* HooFSRPCClient_h */

@@ -12,13 +12,11 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <xmlrpccpp.h>
+//#include <xmlrpccpp.h>
 using namespace std;
 
-HooFSRPCClient::HooFSRPCClient(string ip, int serverPort, int clientPort) {
-    this->cPort = clientPort;
-    this->serverPort = serverPort;
-    this->serverIP = ip;
+HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
+    serverURL = "http://" + ip + ":" + to_string(serverPort) + "/RPC2";
     
 }
 
@@ -26,39 +24,51 @@ HooFSRPCClient::~HooFSRPCClient() {
 
 }
 
-dirent *readdir(char *path) {
+dirent *HooFSRPCClient::readdir(const char *path) {
 
 }
 
-int open(char *path, int flags) {
+int HooFSRPCClient::open(const char *path, int flags) {
 
 }
 
-int create(char *path, int mode) {
+int HooFSRPCClient::create(const char *path, int mode) {
+    int ret = -1;
+
+    try {
+        ourClient.call(serverURL, _create, "si", &res, path, mode);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+    
+    return ret;
+}
+
+int HooFSRPCClient::unlink(const char *path) {
 
 }
 
-int unlink(char *path) {
+int HooFSRPCClient::release(int fd) {
 
 }
 
-int release(int fd) {
+struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
 
 }
 
-struct stat *getAttr(char *path, struct stat *stbuf) {
+int HooFSRPCClient::rmdir(const char *path) {
 
 }
 
-int rmdir(char *path) {
+int HooFSRPCClient::read(int fd, int size, int offset) {
 
 }
 
-int read(int fd, int size, int offset) {
-
-}
-
-int write(int fd, char *buf, int size, int offset) {
+int HooFSRPCClient::write(int fd, const char *buf, int size, int offset) {
 
 }
 
