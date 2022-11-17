@@ -72,17 +72,20 @@ int HooFSRPCClient::unlink(const char *path) {
 }
 
 int HooFSRPCClient::release(int fd) {
-    /*
+    int ret = -1;
+    
     try {
-        ourClient.call(serverURL, _release, "s", &res, path);
+        value res;
+        ourClient.call(serverURL, _release, "i", &res, fd);
         ret = value_int(res);
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
     } catch (...) {
         cerr << "Client threw unexpected error." << endl;
-    }*/
-     
+    }
+    
+    return ret;
 }
 
 struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
