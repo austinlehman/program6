@@ -417,17 +417,6 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
     return xmlrpc_int_new(envP, (int) writtenBytes);
 }
 
-/*
-static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
-                         *outargs) {
-    if (key == FUSE_OPT_KEY_NONOPT && fileSystemRoot == NULL) {
-        fileSystemRoot = strdup(arg);
-        return 0;
-    }
-    return 1;
-}
- */
-
 int main(int argc, char *argv[]) {
 
     /* Check to make sure that a port is passed */
@@ -436,6 +425,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    /* RPC-XML Method Structures */
     struct xmlrpc_method_info3 const rpcgetattrMethodInfo = {
             .methodName = "rpc.getattr",
             .methodFunction = &rpc_getattr,
@@ -524,7 +514,7 @@ int main(int argc, char *argv[]) {
     serverRegistry = xmlrpc_registry_new(&env);
 
     /* Append m3 RPC methods to registry */
-    xmlrpc_registry_add_method3(&env, serverRegistry, &rpcgetattrMethodInfo);           //THIS MIGHT NEED TO CHANGE
+    xmlrpc_registry_add_method3(&env, serverRegistry, &rpcgetattrMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcsetxattrMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcchmodMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcchownMethodInfo);
