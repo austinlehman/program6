@@ -103,7 +103,7 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
         return xmlrpc_int_new(envP, -errno);
     }
     
-    return xmlrpc_int_new(envP, 0);
+    return xmlrpc_struct_new_value(envP, (xmlrpc_value *)stbuf);
 }
 
 static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
