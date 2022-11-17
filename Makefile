@@ -1,3 +1,7 @@
+# Author: Joshua Hunter and Austin Lehman
+# Assignment: Program 6
+# Class: CSI 4337
+
 CFLAGS = -Wall -Wextra -Wpedantic -Wconversion
 
 RPCDIR = $(CURDIR)/xmlrpc-c-1.54.06
