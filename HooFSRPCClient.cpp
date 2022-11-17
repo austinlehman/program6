@@ -80,15 +80,18 @@ int HooFSRPCClient::rmdir(const char *path) {
 
 }
 
-int HooFSRPCClient::read(int fd, int size, int offset) {
+char* HooFSRPCClient::read(int fd, int size, int offset) {
     xmlrpc_c::value response;
     ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
 
-    string retFile = xmlrpc_c::value_string(response);
-    return retFile;
+    char* retBuffer = xmlrpc_c::value_string(response);
+    return retBuffer;
 }
 
-int HooFSRPCClient::write(int fd, const char *buf, int size, int offset) {
+int HooFSRPCClient::write(int fd, int size, int offset, const char *data) {
+    xmlrpc_c::value response;
+    ourClient.call(serverURL, _write, "iiis", &response, fd, size, offset, data);
 
+    int retBytesWritten = xmlrpc_c::value_int(response);
+    return retBytesWritten;
 }
-

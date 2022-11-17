@@ -54,8 +54,8 @@ class HooFSRPCClient {
         int release(int fd);
         struct stat *getAttr(const char *path, struct stat *stbuf);
         int rmdir(const char *path);
-        int read(int fd, int size, int offset);
-        int write(int fd, const char *buf, int size, int offset);
+        char* read(int fd, int size, int offset);
+        int write(int fd, int size, int offset, const char *data);
 };
 
 #endif /* HooFSRPCClient_h */

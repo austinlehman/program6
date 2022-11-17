@@ -390,16 +390,15 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
 }
 
 static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
-    xmlrpc_value *initPath;
-    xmlrpc_value *initBuf;
+
+    xmlrpc_int initFD;
     xmlrpc_int initSize;
     xmlrpc_int initOffset;
-    xmlrpc_int initFD;
+    xmlrpc_value *initData;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "(ssiii)", &initPath, &initBuf, &initSize, &initOffset, &initFD);
-    
-    const char *path = (char *) initPath;
-    const char *buf = (char *) initBuf;
+    xmlrpc_decompose_value(envP, paramArrayP, "(iiis)", &initFD, &initSize, &initOffset, &initData);
+
+    const char *data = (char *) initData;
     size_t size = (size_t) initSize; //may need to be changed to unsigned int??
     off_t offset = (off_t) initOffset;
     int fd = (int) initFD; //may need to be an int *????
@@ -411,7 +410,7 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
         return xmlrpc_int_new(envP, -errno);
     }
     // Write bytes
-    ssize_t writtenBytes = write((int) fd, buf, size);
+    ssize_t writtenBytes = write((int) fd, data, size);
     if (writtenBytes < 0) {
         logMessage("write() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
