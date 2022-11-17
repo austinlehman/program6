@@ -120,6 +120,7 @@ static int rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP
     size_t size = (size_t) (*initSize);
     int flags = (int) (*initFlags);
     
+    logMessage("calling setxattr on %s with name %s, value %s, size %d, and flags %d", path, name, value, size, flags);
     //macOS version
     if(setxattr(path, name, value, size, 0, flags) < 0) {
         logMessage("setxattr() failed: %s\n", strerror(errno));
@@ -145,6 +146,8 @@ static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const para
     
     const char *path = (char *) initPath;
     mode_t mode = (mode_t) (*initMode);
+    
+    logMessage("calling chmod on %s with mode %d\n", path, mode);
     if(chmod(path, mode) < 0) {
         logMessage("chmod() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
@@ -152,8 +155,22 @@ static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const para
     return xmlrpc_int_new(envP, 0);
 }
 
-static int rpc_chown(const char *path, uid_t uid, gid_t gid) {
-    printf("chown\n");
+static xmlrpc_value *rpc_chown(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+    xmlrpc_value *initPath;
+    xmlrpc_int *initUID;
+    xmlrpc_int *initGID;
+    
+    xmlrpc_decompose_value(envP, paramArrayP, "sii", &initPath, &initUID, &initGID);
+    
+    const char *path = (char *)initPath;
+    uid_t uid = (uid_t) (*initUID);
+    gid_t gid = (gid_t) (*initGID);
+    
+    logMessage("Calling chown on %s\n", path);
+    if(chown(path, uid, gid) < 0) {
+        logMessage("chmod() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
     return 0;
 }
 
