@@ -1,4 +1,4 @@
-CFLAGS = ""
+CFLAGS = -Wall -pedantic -Wextra
 
 RPCDIR = $(CURDIR)/xmlrpc-c-1.54.06
 INCLUDE = -I. -I$(CURDIR)/include
