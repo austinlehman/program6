@@ -113,7 +113,7 @@ static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const p
     xmlrpc_int initFlags;
     
     
-    xmlrpc_decompose_value(envP, paramArrayP, "sssii", &initPath, &initName, &initValue, &initSize, &initFlags);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sssii)", &initPath, &initName, &initValue, &initSize, &initFlags);
     
     const char *path = (char *)initPath;
     const char *name = (char *)initName;
@@ -144,7 +144,7 @@ static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const para
     xmlrpc_value *initPath;
     xmlrpc_int initMode;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initMode);
+    xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initMode);
     
     const char *path = (char *) initPath;
     mode_t mode = (mode_t) initMode;
@@ -162,7 +162,7 @@ static xmlrpc_value *rpc_chown(xmlrpc_env *const envP,  xmlrpc_value *const para
     xmlrpc_int initUID;
     xmlrpc_int initGID;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "sii", &initPath, &initUID, &initGID);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &initPath, &initUID, &initGID);
     
     const char *path = (char *)initPath;
     uid_t uid = (uid_t) initUID;
@@ -180,7 +180,7 @@ static xmlrpc_value *rpc_utime(xmlrpc_env *const envP,  xmlrpc_value *const para
     xmlrpc_value *initPath;
     xmlrpc_value *initUbuf;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "sS", &initPath, &initUbuf);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, &initUbuf);
     
     const char *path = (char *)initPath;
     struct utimbuf *ubuf = (struct utimbuf *)initUbuf;
@@ -197,7 +197,7 @@ static xmlrpc_value *rpc_truncate(xmlrpc_env *const envP,  xmlrpc_value *const p
     xmlrpc_value *initPath;
     xmlrpc_int initNewSize;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initNewSize);
+    xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initNewSize);
     
     const char *path = (char *)initPath;
     off_t newsize = (off_t) initNewSize;
@@ -222,7 +222,7 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
     xmlrpc_int initOffset;
     xmlrpc_int *initFD;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "ssii", &initPath, &initBuf, &initOffset, &initFD);
+    xmlrpc_decompose_value(envP, paramArrayP, "(ssii)", &initPath, &initBuf, &initOffset, &initFD);
     
     const char *path = (char *) initPath;
     void *buf = (char *) initBuf;
@@ -260,7 +260,7 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
     xmlrpc_int *fileInfo;
     xmlrpc_int fileFlags;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "sii", &pathVal, &fileInfo, &fileFlags);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &pathVal, &fileInfo, &fileFlags);
     const char *path = (char *)pathVal;
     int *fi = (int *) fileInfo;
     unsigned int flags = (unsigned int) fileFlags;
@@ -287,7 +287,7 @@ static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const pa
     xmlrpc_value *initPath;
     xmlrpc_int *initFd;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initFd);
+    xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initFd);
     
     const char *path = (char *) initPath;
     int fd = *((int *) initFd);
@@ -303,9 +303,9 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
 
     xmlrpc_value* initPath;
     xmlrpc_value* initMode;
-    //xmlrpc_int *fi;
+    xmlrpc_int *fi;
 
-    xmlrpc_decompose_value(envP, paramArrayP, "si", &initPath, &initMode);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sii)", &initPath, &initMode, &fi);
 
     if(envP->fault_occurred) {
         return NULL;
@@ -325,15 +325,15 @@ static xmlrpc_value* rpc_create(xmlrpc_env *envP, xmlrpc_value *paramArrayP, voi
         logMessage("creat() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    //fi = &fd;
+    fi = &fd;
 
-    return xmlrpc_int_new(envP, fd);
+    return xmlrpc_int_new(envP, fi);
 }
 
 static xmlrpc_value *rpc_unlink(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     
     xmlrpc_value *initPath;
-    xmlrpc_decompose_value(envP, paramArrayP, "s", &initPath);
+    xmlrpc_decompose_value(envP, paramArrayP, "(s)", &initPath);
     
     const char *path = (char *)initPath;
     
@@ -364,7 +364,7 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
     xmlrpc_int initOffset;
     xmlrpc_int initFD;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "ssiii", &initPath, &initBuf, &initSize, &initOffset, &initFD);
+    xmlrpc_decompose_value(envP, paramArrayP, "(ssiii)", &initPath, &initBuf, &initSize, &initOffset, &initFD);
     
     const char *path = (char *) initPath;
     char *buf = (char *) initBuf;
@@ -394,7 +394,7 @@ static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const para
     xmlrpc_int initOffset;
     xmlrpc_int initFD;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "ssiii", &initPath, &initBuf, &initSize, &initOffset, &initFD);
+    xmlrpc_decompose_value(envP, paramArrayP, "(ssiii)", &initPath, &initBuf, &initSize, &initOffset, &initFD);
     
     const char *path = (char *) initPath;
     const char *buf = (char *) initBuf;
