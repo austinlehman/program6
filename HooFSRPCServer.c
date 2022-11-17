@@ -397,7 +397,6 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
     char buf[(int) size];
     
     int fd = (int) initFD;
-    char buf[size];
 
     /* Seek to position in file */
     logMessage("Reading from open file\n");

@@ -21,6 +21,10 @@ HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
     
 }
 
+HooFSRPCClient::~HooFSRPCClient() {
+    
+}
+
 dirent *HooFSRPCClient::readdir(const char *path) {
 
     //Read a directory listing

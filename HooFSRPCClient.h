@@ -60,6 +60,11 @@ class HooFSRPCClient {
         HooFSRPCClient(string ip, int serverPort);
 
         /**
+         * Deconstructs HooFSRPCClient
+         */
+        ~HooFSRPCClient();
+
+        /**
          * Reads a listing of the directory
          * \param path directory path to operate over
          * \return listing of the directory
