@@ -44,9 +44,11 @@ int main(int argc, const char * argv[]) {
     client.create("hi.txt", 0777);
     int fd = client.open("hi.txt", O_RDWR);
     client.write(fd, 3, 0, "hi\0");
+    struct stat *stat;
+    stat = client.getAttr("hi.txt", stat);
     //string str = client.read(fd, 3, 0);
     //cout << str << endl;
-    
+    client.release(fd);
     //client.unlink("hi.txt");
     return 0;
 }
