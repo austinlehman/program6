@@ -1,4 +1,4 @@
-CFLAGS = Wall -Wextra -Wpedantic -Wconversion
+CFLAGS = -Wall -Wextra -Wpedantic -Wconversion
 
 RPCDIR = $(CURDIR)/xmlrpc-c-1.54.06
 INCLUDE = -I. -I$(CURDIR)/include
@@ -15,9 +15,9 @@ HooFSRPCServer.o: HooFSRPCServer.c
 	gcc -c -I. $(INCLUDE) HooFSRPCServer.c 
 
 HooFSRPCTestDriver.o: HooFSRPCTestDriver.cpp 
-	g++ -std=c++11 -c -I. $(INCLUDE) HooFSRPCTestDriver.cpp
+	g++ $(CFLAGS) -std=c++11 -c -I. $(INCLUDE) HooFSRPCTestDriver.cpp
 
 HooFSRPCClient.o: HooFSRPCClient.cpp
-	g++ -std=c++11 -c -I. $(INCLUDE) HooFSRPCClient.cpp 
+	g++ $(CFLAGS) -std=c++11 -c -I. $(INCLUDE) HooFSRPCClient.cpp 
 clean:
 	rm *.o hoofsrpcserver hoofsrpctestdriver
