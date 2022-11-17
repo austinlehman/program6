@@ -39,9 +39,6 @@ int main(int argc, const char * argv[]) {
     }
 
     HooFSRPCClient client(serverIP, serverPort);
-    client.create("hi.txt", 02);
-    client.unlink("hi.txt");
-    HooFSRPCClient client("localhost", 8180);
     client.create("hi.txt", 0777);
     int fd = client.open("hi.txt", O_RDWR);
     client.write(fd, 3, 0, "hi\n");
