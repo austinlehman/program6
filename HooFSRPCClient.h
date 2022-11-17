@@ -1,9 +1,10 @@
-//
-//  HooFSRPCClient.h
-//  p6
-//
-//  Created by Austin Lehman on 11/15/22.
-//
+/************************************************
+*
+* Author: Joshua Hunter and Austin Lehman
+* Assignment: Program 6
+* Class: CSI 4337
+*
+************************************************/
 
 #ifndef HooFSRPCClient_h
 #define HooFSRPCClient_h
