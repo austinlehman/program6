@@ -359,18 +359,18 @@ static xmlrpc_value *rpc_rmdir(xmlrpc_env *const envP,  xmlrpc_value *const para
 }
 
 static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
-    xmlrpc_value *initPath;
-    xmlrpc_value *initBuf;
+    xmlrpc_int initFD;
     xmlrpc_int initSize;
     xmlrpc_int initOffset;
-    xmlrpc_int initFD;
+
     
-    xmlrpc_decompose_value(envP, paramArrayP, "(ssiii)", &initPath, &initBuf, &initSize, &initOffset, &initFD);
+    xmlrpc_decompose_value(envP, paramArrayP, "(iii)", &initFD, &initSize, &initOffset);
     
-    const char *path = (char *) initPath;
-    char *buf = (char *) initBuf;
+    
     size_t size = (size_t) initSize; //may need to be changed to unsigned int??
     off_t offset = (off_t) initOffset;
+    char buf[size];
+    
     int fd = (int) initFD; //may need to be an int *????
     
     logMessage("Reading from open file\n");
