@@ -28,6 +28,8 @@ dirent *HooFSRPCClient::readdir(const char *path) {                 //FIX
     xmlrpc_c::value response;
     ourClient.call(serverURL, _readdir, "", &response);
     cout << xmlrpc_c::value_int(response) << endl;
+
+    return nullptr;
 }
 
 int HooFSRPCClient::open(const char *path, int flags) {
