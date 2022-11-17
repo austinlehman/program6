@@ -284,13 +284,10 @@ static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const param
 }
 
 static xmlrpc_value *rpc_release(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
-    
-    xmlrpc_value *initPath;
     xmlrpc_int *initFd;
     
-    xmlrpc_decompose_value(envP, paramArrayP, "(si)", &initPath, &initFd);
+    xmlrpc_decompose_value(envP, paramArrayP, "(i)", &initFd);
     
-    const char *path = (char *) initPath;
     int fd = *((int *) initFd);
     
     if (close(fd) < 0) {

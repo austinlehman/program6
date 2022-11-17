@@ -68,20 +68,24 @@ int HooFSRPCClient::unlink(const char *path) {
     } catch (...) {
         cerr << "Client threw unexpected error." << endl;
     }
+    return ret;
 }
 
 int HooFSRPCClient::release(int fd) {
-    /*
+    int ret = -1;
+    
     try {
-        ourClient.call(serverURL, _release, "s", &res, path);
+        value res;
+        ourClient.call(serverURL, _release, "i", &res, fd);
         ret = value_int(res);
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
     } catch (...) {
         cerr << "Client threw unexpected error." << endl;
-    }*/
-     
+    }
+    
+    return ret;
 }
 
 struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
@@ -96,11 +100,11 @@ int HooFSRPCClient::rmdir(const char *path) {
 
 }
 
-char* HooFSRPCClient::read(int fd, int size, int offset) {
+string HooFSRPCClient::read(int fd, int size, int offset) {
     xmlrpc_c::value response;
     ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
 
-    char* retBuffer = xmlrpc_c::value_string(response);
+    string retBuffer = (string) value_string(response);
     return retBuffer;
 }
 
