@@ -22,7 +22,7 @@ class HooFSRPCClient {
     int serverPort;
     string serverIP;
     
-    HooFSRPCClient(int cPort, int serverPort, string serverIP);
+    HooFSRPCClient(string ip, int serverPort, int clientPort);
     ~HooFSRPCClient();
     
     dirent *readdir(char *path);
