@@ -104,7 +104,7 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     return xmlrpc_int_new(envP, 0);
 }
 
-static int rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
+static xmlrpc_value *rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     xmlrpc_value *initPath;
     xmlrpc_value *initName;
     xmlrpc_value *initValue;
@@ -135,7 +135,7 @@ static int rpc_setxattr(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP
     }
      */
     
-    return 0;
+    return xmlrpc_int_new(envP, 0);
 }
 
 static xmlrpc_value *rpc_chmod(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
