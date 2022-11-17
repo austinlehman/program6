@@ -25,11 +25,17 @@ HooFSRPCClient::~HooFSRPCClient() {
 }
 
 dirent *HooFSRPCClient::readdir(const char *path) {
-
+    xmlrpc_c::value response;
+    ourClient.call(serverURL, _readdir, "", &response);
+    cout << xmlrpc_c::value_int(response) << endl;
 }
 
 int HooFSRPCClient::open(const char *path, int flags) {
+    xmlrpc_c::value response;
+    ourClient.call(serverURL, _open, "si", &response, path, flags);
 
+    int retFile = xmlrpc_c::value_int(response);
+    return retFile;
 }
 
 int HooFSRPCClient::create(const char *path, int mode) {
