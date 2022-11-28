@@ -16,7 +16,7 @@ HooFSRPCTestDriver: HooFSRPCClient.o HooFSRPCTestDriver.o
 	g++ -std=c++11 -o hoofsrpctestdriver HooFSRPCTestDriver.o HooFSRPCClient.o $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_client++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_client.a $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc++.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil++/libxmlrpc_util++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread  -lcurl   $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_packetsocket.a 
 
 HooFSRPCServer.o: HooFSRPCServer.c
-	gcc -c -I. $(INCLUDE) HooFSRPCServer.c -g
+	gcc -c -I. $(INCLUDE) HooFSRPCServer.c
 
 HooFSRPCTestDriver.o: HooFSRPCTestDriver.cpp 
 	g++ $(CFLAGS) -std=c++11 -c -I. $(INCLUDE) HooFSRPCTestDriver.cpp
