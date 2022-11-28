@@ -45,10 +45,29 @@ int main(int argc, const char * argv[]) {
     HooFSRPCClient client(serverIP, serverPort);
 
     //Testing RPC Calls
+    cout << "creating hi.txt with all permissions" << endl;
     client.create("hi.txt", 0777);
+    cout << "created hi.txt successfully" << endl << endl;
+    
+    cout << "opening hi.txt for reading and writing" << endl;
     int fd = client.open("hi.txt", O_RDWR);
-    client.write(fd, 2, 0, "hi");
+    cout << "opened hi.txt successfully" << endl << endl;
+    
+    cout << "writing \"hi\" to hi.txt" << endl;
+    client.write(fd, 3, 0, "hi\0");
+    cout << "wrote \"hi\" to hi.txt successfully" << endl << endl;
+    
+    cout << "reading from hi.txt" << endl;
+    string s = client.read(fd, 3, 0);
+    cout << "read " << s << " from hi.txt" << endl << endl;
+
+    cout << "releasing the file descriptor for hi.txt" << endl;
     client.release(fd);
+    cout << "released file descriptor successfully" << endl << endl;
+    
+    cout << "unlinking (removing) hi.txt" << endl;
     client.unlink("hi.txt");
+    cout << "hi.txt unlinked successfully" << endl << endl;
+    
     return 0;
 }

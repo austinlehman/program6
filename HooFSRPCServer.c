@@ -413,7 +413,7 @@ static xmlrpc_value *rpc_read(xmlrpc_env *const envP,  xmlrpc_value *const param
         return xmlrpc_int_new(envP, -errno);
     }
     
-    return xmlrpc_value_new(envP, (xmlrpc_value*) buf);
+    return xmlrpc_value_new(envP, xmlrpc_string_new(envP, buf));
 }
 
 static xmlrpc_value *rpc_write(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
