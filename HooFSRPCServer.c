@@ -529,6 +529,8 @@ int main(int argc, char *argv[]) {
         .methodFunction = &rpc_write,
     };
     
+    
+    
     /* Validate port */
     int serverPort;
     sscanf(argv[PORT_ARG], "%d", &serverPort);
