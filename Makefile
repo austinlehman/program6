@@ -2,7 +2,7 @@
 # Assignment: Program 6
 # Class: CSI 4337
 
-CFLAGS = -Wall -Wextra -Wconversion -Wno-unused-parameter -g `pkg-config fuse --cflags`
+CFLAGS =  -std=c++11 -Wall -Wextra -Wconversion -Wno-unused-parameter -g `pkg-config fuse --cflags`
 LDFLAGS = `pkg-config fuse --libs`
 
 RPCDIR = $(CURDIR)/xmlrpc-c-1.54.06
@@ -16,7 +16,8 @@ HooFSRPCServer: HooFSRPCServer.o
 HooFSRPCTestDriver: HooFSRPCClient.o HooFSRPCTestDriver.o
 	g++ -std=c++11 -o hoofsrpctestdriver HooFSRPCTestDriver.o HooFSRPCClient.o $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_client++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_client.a $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc++.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil++/libxmlrpc_util++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread  -lcurl   $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_packetsocket.a 
 
-HooFSFuse: HooFSFuse.o
+HooFSFuse: HooFSFuse.o HooFSRPCClient.o
+	g++ --std=c++20 -o hoofsfuse HooFSFuse.o HooFSRPCClient.o $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_client++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_client.a $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc++.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil++/libxmlrpc_util++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread  -lcurl   $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_packetsocket.a 
 
 HooFSRPCServer.o: HooFSRPCServer.c
 	gcc -c -I. $(INCLUDE) HooFSRPCServer.c
@@ -26,6 +27,9 @@ HooFSRPCTestDriver.o: HooFSRPCTestDriver.cpp
 
 HooFSRPCClient.o: HooFSRPCClient.cpp
 	g++ $(CFLAGS) -std=c++11 -c -I. $(INCLUDE) HooFSRPCClient.cpp 
+
+HooFSFuse.o: HooFSFuse.c
+	g++ $(CFLAGS) -c -I. $(INCLUDE) HooFSFuse.c 
 
 clean:
 	rm *.o hoofsrpcserver hoofsrpctestdriver hoofsfuse
