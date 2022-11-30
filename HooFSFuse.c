@@ -1,3 +1,11 @@
+/************************************************
+ *
+ * Author: Joshua Hunter and Austin Lehman
+ * Assignment: Program 7
+ * Class: CSI 4337
+ *
+ ************************************************/
+
 /*
  Hoofs (pronounce Hooves) Filesystem
  gcc -Wall `pkg-config fuse --cflags --libs` hoofs.c -o hoofs
@@ -18,7 +26,7 @@
 #include "HooFSRPCClient.h"
 
 //Constants
-const int NUM_ARGS = 2;
+const int NUM_ARGS = 4;
 const int PROG_ARG = 0;
 const int IP_ARG = 1;
 const int PORT_ARG = 2;
@@ -133,8 +141,8 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 3) {
-        fprintf(stderr, "Usage: %s <filesystem root> <fuse params>...\n", argv[0]);
+    if (argc < NUM_ARGS) {
+        fprintf(stderr, "Usage: %s <server name/address> <server port> <fuse params>...\n", argv[0]);
         exit(1);
     }
     char *serverIP = argv[IP_ARG];
