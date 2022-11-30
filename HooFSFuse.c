@@ -114,22 +114,7 @@ static int hoofs_write(const char *path, const char *buf, size_t size, off_t
     return (int) 0;
 }
 
-static struct fuse_operations hoofs_oper = {
-    .getattr = hoofs_getattr,
-    .setxattr = hoofs_setxattr,
-    .chmod = hoofs_chmod,
-    .chown = hoofs_chown,
-    .utime = hoofs_utime,
-    .truncate = hoofs_truncate,
-    .readdir = hoofs_readdir,
-    .open = hoofs_open,
-    .release = hoofs_release,
-    .create = hoofs_create,
-    .unlink = hoofs_unlink,
-    .rmdir = hoofs_rmdir,
-    .read = hoofs_read,
-    .write = hoofs_write,
-};
+static struct fuse_operations hoofs_oper;
 
 static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
                          *outargs) {
@@ -146,6 +131,21 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     char *serverIP = argv[IP_ARG];
+    hoofs_oper.getattr = hoofs_getattr;
+    hoofs_oper.setxattr = hoofs_setxattr;
+    hoofs_oper.chmod = hoofs_chmod;
+    hoofs_oper.chown = hoofs_chown;
+    hoofs_oper.utime = hoofs_utime;
+    hoofs_oper.truncate = hoofs_truncate;
+    hoofs_oper.readdir = hoofs_readdir;
+    hoofs_oper.open = hoofs_open;
+    hoofs_oper.release = hoofs_release;
+    hoofs_oper.create = hoofs_create;
+    hoofs_oper.unlink = hoofs_unlink;
+    hoofs_oper.rmdir = hoofs_rmdir;
+    hoofs_oper.read = hoofs_read;
+    hoofs_oper.write = hoofs_write;
+    
     
     //Register and validate port
     int serverPort;
