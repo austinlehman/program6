@@ -18,7 +18,6 @@ using namespace std;
 
 HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
     serverURL = "http://" + ip + ":" + to_string(serverPort) + "/RPC2";
-    
 }
 
 HooFSRPCClient::~HooFSRPCClient() {
@@ -29,6 +28,7 @@ dirent *HooFSRPCClient::readdir(const char *path) {
 
     //Read a directory listing
     try {
+        cout << path << endl;
         xmlrpc_c::value response;
         ourClient.call(serverURL, _readdir, "", &response);
         cout << xmlrpc_c::value_int(response) << endl;
