@@ -74,6 +74,11 @@ static int hoofs_truncate(const char *path, off_t newsize) {
     return 0;
 }
 
+static int hoofs_rename(const char *path, const char *newPath) {
+    printf("rename\n");
+    return 0;
+}
+
 static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
                          offset, struct fuse_file_info *fi) {
     printf("readdir\n");
@@ -143,6 +148,7 @@ int main(int argc, char *argv[]) {
     hoofs_oper.chown = hoofs_chown;
     hoofs_oper.utime = hoofs_utime;
     hoofs_oper.truncate = hoofs_truncate;
+    hoofs_oper.rename = hoofs_rename;
     hoofs_oper.readdir = hoofs_readdir;
     hoofs_oper.open = hoofs_open;
     hoofs_oper.release = hoofs_release;
