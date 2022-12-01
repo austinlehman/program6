@@ -69,7 +69,7 @@ class HooFSRPCClient {
          * \param path directory path to operate over
          * \return listing of the directory
          */
-        dirent* readdir(const char *path);
+        string readdir(const char *path);
 
         /**
          * Opens file in the directory path

@@ -24,14 +24,18 @@ HooFSRPCClient::~HooFSRPCClient() {
     
 }
 
-dirent *HooFSRPCClient::readdir(const char *path) {
-
+string HooFSRPCClient::readdir(const char *path) {
+    string ret;
+    //string s = path;
     //Read a directory listing
     try {
+        cout << "ABC";
         cout << path << endl;
         xmlrpc_c::value response;
-        ourClient.call(serverURL, _readdir, "", &response);
-        cout << xmlrpc_c::value_int(response) << endl;
+        ourClient.call(serverURL, _readdir, "s", &response, path);
+        cout << "EFG";
+        //cout << xmlrpc_c::value_int(response) << endl;
+        ret = xmlrpc_c::value_string(response);
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
@@ -39,7 +43,7 @@ dirent *HooFSRPCClient::readdir(const char *path) {
         cerr << "Client threw unexpected error." << endl;
     }
     
-    return nullptr;
+    return ret;
 }
 
 int HooFSRPCClient::open(const char *path, int flags) {
