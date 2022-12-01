@@ -165,10 +165,18 @@ int main(int argc, char *argv[]) {
     rpcClient = new HooFSRPCClient(serverIP, serverPort);
 
     //rpcClient->readdir(argv[3]);
-    rpcClient->create("hi.txt", 0777);
-    char** fuseArgs = argv + 2;
-    //struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
-    //fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
-    //return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
-    return 0;
+    //rpcClient->create("hi.txt", 0777);
+    //char** fuseArgs = argv+2;
+    
+    char* fuseArgs[argc - 2];
+    fuseArgs[0] = argv[0];
+    
+    for(int i = 1; i < argc - 2; i++) {
+        fuseArgs[i] = argv[i + 2];
+    }
+    
+    struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
+    fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
+    return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
+    //return 0;
 }
