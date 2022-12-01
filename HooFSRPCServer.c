@@ -260,38 +260,28 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
         return xmlrpc_string_new(envP, "");
     }
     
-    int capacity = 100;
+    int capacity = 1000;
     int used = 0;
     char *buf = malloc(sizeof(char) * capacity);
+    memset(buf, 0, capacity);
     struct dirent *dirEntry;
     //dirEntry = readdir(dirPtr);
     
-    printf("segfault??\n");
-    /*
-    while (dirEntry != NULL) {
-        
-        char *name = dirEntry->d_name;
-        
-        if (used + strlen(dirEntry->d_name) + 1 >= capacity) {
-            capacity *= 2;
-            buf = realloc(buf, capacity);
-        }
+   
+    while ((dirEntry = readdir(dirPtr)) != NULL) {
         
         strncat(buf, dirEntry->d_name, strlen(dirEntry->d_name)); //almost definitely wrong lol
         strncat(buf, " ", 1);
-        printf(buf);
         
-        used += strlen(dirEntry->d_name);
-        used += 1;
-        dirEntry = readdir(dirPtr);
     }
-     */
+    /*
     errno = 0;
     while ((dirEntry = readdir(dirPtr))) {
         printf("%s\n", dirEntry->d_name);
     }
+     */
     
-    printf("%s", buf);
+    //printf("%s", buf);
     
     closedir(dirPtr);
 

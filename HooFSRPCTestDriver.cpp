@@ -49,6 +49,8 @@ int main(int argc, const char * argv[]) {
     client.create("hi.txt", 0777);
     cout << "created hi.txt successfully" << endl << endl;
     
+    cout << client.readdir("./") << endl;
+    
     cout << "opening hi.txt for reading and writing" << endl;
     int fd = client.open("hi.txt", O_RDWR);
     cout << "opened hi.txt successfully" << endl << endl;

@@ -29,11 +29,8 @@ string HooFSRPCClient::readdir(const char *path) {
     //string s = path;
     //Read a directory listing
     try {
-        cout << "ABC";
-        cout << path << endl;
         xmlrpc_c::value response;
         ourClient.call(serverURL, _readdir, "s", &response, path);
-        cout << "EFG";
         //cout << xmlrpc_c::value_int(response) << endl;
         ret = xmlrpc_c::value_string(response);
     }
