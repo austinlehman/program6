@@ -134,6 +134,11 @@ class HooFSRPCClient {
          * \return Number of written bytes
          */
         int write(int fd, int size, int offset, const char *data);
+
+        int chmod(const char *path, int mode);
+        int chown(const char *path, int uid, int gid);
+        int utime(const char *path, struct stat *stbuf);
+        int trunc(const char *path, int newSize);
 };
 
 #endif /* HooFSRPCClient_h */
