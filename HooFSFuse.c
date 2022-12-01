@@ -164,8 +164,8 @@ int main(int argc, char *argv[]) {
     //Initialize client for RPC communication
     rpcClient = new HooFSRPCClient(serverIP, serverPort);
 
-    rpcClient->readdir(argv[3]);
-    
+    //rpcClient->readdir(argv[3]);
+    rpcClient->create("hi.txt", 0777);
     char** fuseArgs = argv + 2;
     //struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
     //fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
