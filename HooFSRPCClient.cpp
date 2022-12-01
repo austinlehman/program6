@@ -284,3 +284,22 @@ int HooFSRPCClient::trunc(const char *path, int newSize) {
 
     return ret;
 }
+
+int HooFSRPCClient::rename(const char *path, const char *newPath) {
+    //Response of the rename call for success/fail
+    int ret = -1;
+
+    //Call the server to truncate file
+    try {
+        value res;
+        ourClient.call(serverURL, _rename, "ss", &res, path, newPath);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
+    return ret;
+}

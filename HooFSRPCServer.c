@@ -377,6 +377,39 @@ static xmlrpc_value *rpc_unlink(xmlrpc_env *const envP,  xmlrpc_value *const par
     return xmlrpc_int_new(envP, 0);
 }
 
+static xmlrpc_value* rpc_rename(xmlrpc_env *envP, xmlrpc_value *paramArrayP, void *serverInfo, void *callInfo) {
+
+    /* XMLRPC Attributes to unload parameter values into */
+    xmlrpc_value* initPath;
+    xmlrpc_value* changePath;
+
+    /* Syphon off values from parameters */
+    xmlrpc_decompose_value(envP, paramArrayP, "(ss)", &initPath, &changePath);
+    if(envP->fault_occurred) {
+        return NULL;
+    }
+
+    /* Unload from decomposition */
+    const char *path = (char *)initPath;
+    const char *newPath = (char *)changePath;
+    size_t pathLen = getFullPathLength(path);
+    size_t newPathLen = getFullPathLength(newPath);
+    char fullPath[pathLen];
+    char newFullPath[newPathLen];
+    getFullPath(path, fullPath, pathLen);
+    getFullPath(newPath, newFullPath, newPathLen);
+
+    /* Rename file at specified path to new path */
+    logMessage("Renaming file @ %s to %s\n", fullPath, newFullPath);
+    int ind = rename(fullPath, newFullPath);
+    if (ind < 0) {
+        logMessage("rename() failed: %s\n", strerror(errno));
+        return xmlrpc_int_new(envP, -errno);
+    }
+
+    return xmlrpc_int_new(envP, 0);
+}
+
 static xmlrpc_value *rpc_rmdir(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {
     return rpc_unlink(envP, paramArrayP, serverInfo, channelInfo);
 }
@@ -488,6 +521,11 @@ int main(int argc, char *argv[]) {
         .methodName = "rpc.truncate",
         .methodFunction = &rpc_truncate,
     };
+
+    struct xmlrpc_method_info3 const rpcrenameMethodInfo = {
+            .methodName = "rpc.rename",
+            .methodFunction = &rpc_rename,
+    };
     
     struct xmlrpc_method_info3 const rpcreaddirMethodInfo = {
         .methodName = "rpc.readdir",
@@ -555,6 +593,7 @@ int main(int argc, char *argv[]) {
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcchownMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcutimeMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpctruncateMethodInfo);
+    xmlrpc_registry_add_method3(&env, serverRegistry, &rpcrenameMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcreaddirMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcopenMethodInfo);
     xmlrpc_registry_add_method3(&env, serverRegistry, &rpcreleaseMethodInfo);

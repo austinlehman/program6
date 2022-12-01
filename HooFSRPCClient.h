@@ -40,6 +40,7 @@ string const _chmod("rpc.chmod");
 string const _chown("rpc.chown");
 string const _utime("rpc.utime");
 string const _truncate("rpc.truncate");
+string const _rename("rpc.rename");
 
 /**
  * HooFDRPCClient is the client to implement the action
@@ -167,6 +168,14 @@ class HooFSRPCClient {
          * \return Success indicator
          */
         int trunc(const char *path, int newSize);
+
+        /**
+         * Rename a file from old path to new
+         * \param path directory path to operate over
+         * \param newPath new path of the renamed directory
+         * \return Success indicator
+         */
+        int rename(const char *path, const char *newPath);
 };
 
 #endif /* HooFSRPCClient_h */
