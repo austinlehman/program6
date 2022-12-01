@@ -46,6 +46,7 @@ const int PORT_ARG = 1;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
+
 /* Global variables */
 static char *fileSystemRoot = "./";
 
@@ -239,36 +240,62 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
 
     /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
-    xmlrpc_value *initBuf;
-    xmlrpc_int initOffset;
-    xmlrpc_int *initFD;
-
+    
     /* Syphon off values from parameters */
-    xmlrpc_decompose_value(envP, paramArrayP, "(ssii)", &initPath, &initBuf, &initOffset, &initFD);
-
+    xmlrpc_decompose_value(envP, paramArrayP, "(s)", &initPath);
+    
     /* Unload from decomposition */
     const char *path = (char *) initPath;
-    void *buf = (char *) initBuf;
-    off_t offset = (off_t) initOffset;
-    int *fd = (int *)initFD;
+
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
-
+   
     /* Read from directory */
     logMessage("Reading directory for %s\n", fullPath);
-    DIR *dirPtr = opendir(fullPath);
-    if (dirPtr == NULL) {
+    DIR *dirPtr;
+    
+    if ((dirPtr = opendir(fullPath)) == NULL) {
         logMessage("opendir() failed: %s\n", strerror(errno));
-        return xmlrpc_int_new(envP, -errno);
+        return xmlrpc_string_new(envP, "");
     }
+    
+    int capacity = 100;
+    int used = 0;
+    char *buf = malloc(sizeof(char) * capacity);
     struct dirent *dirEntry;
-    while ((dirEntry = readdir(dirPtr)) != NULL) {
+    //dirEntry = readdir(dirPtr);
+    
+    printf("segfault??\n");
+    /*
+    while (dirEntry != NULL) {
+        
+        char *name = dirEntry->d_name;
+        
+        if (used + strlen(dirEntry->d_name) + 1 >= capacity) {
+            capacity *= 2;
+            buf = realloc(buf, capacity);
+        }
+        
         strncat(buf, dirEntry->d_name, strlen(dirEntry->d_name)); //almost definitely wrong lol
+        strncat(buf, " ", 1);
+        printf(buf);
+        
+        used += strlen(dirEntry->d_name);
+        used += 1;
+        dirEntry = readdir(dirPtr);
     }
+     */
+    errno = 0;
+    while ((dirEntry = readdir(dirPtr))) {
+        printf("%s\n", dirEntry->d_name);
+    }
+    
+    printf("%s", buf);
+    
     closedir(dirPtr);
 
-    return xmlrpc_int_new(envP, 0);
+    return xmlrpc_string_new(envP, buf);
 }
 
 static xmlrpc_value *rpc_open(xmlrpc_env *const envP,  xmlrpc_value *const paramArrayP, void *const serverInfo, void *const channelInfo) {

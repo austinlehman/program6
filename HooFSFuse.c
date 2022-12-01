@@ -35,13 +35,16 @@ const int PORTMAX = 65535;
 
 
 static char *fileSystemRoot;
+HooFSRPCClient *rpcClient;
 
 /*
  * Get file attributes
  */
 static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
+    printf("getattr\n\n\n");
     
+    //return rpcClient->getAttr(path, (struct stat *) stbuf);
     return 0;
 }
 
@@ -73,44 +76,45 @@ static int hoofs_truncate(const char *path, off_t newsize) {
 
 static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
                          offset, struct fuse_file_info *fi) {
-   
+    printf("readdir\n");
     return 0;
 }
 
 static int hoofs_open(const char *path, struct fuse_file_info *fi) {
     // Compute the full path name
-    
+    printf("open\n");
     return 0;
 }
 
 static int hoofs_release(const char *path, struct fuse_file_info *fi) {
-    
+    printf("release\n");
     return 0;
 }
 
 static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
-    
+    printf("create\n");
     return 0;
 }
 
 static int hoofs_unlink(const char *path) {
-    
+    printf("unlink\n");
     return 0;
 }
 
 static int hoofs_rmdir(const char *path) {
+    printf("rmdir\n");
     return hoofs_unlink(path);
 }
 
 static int hoofs_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi) {
-   
+    printf("read\n");
     return 0;
 }
 
 static int hoofs_write(const char *path, const char *buf, size_t size, off_t
                        offset, struct fuse_file_info *fi) {
-    
+    printf("write\n");
     return (int) 0;
 }
 
@@ -130,7 +134,9 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Usage: %s <server name/address> <server port> <fuse params>...\n", argv[0]);
         exit(1);
     }
+    
     char *serverIP = argv[IP_ARG];
+    
     hoofs_oper.getattr = hoofs_getattr;
     hoofs_oper.setxattr = hoofs_setxattr;
     hoofs_oper.chmod = hoofs_chmod;
@@ -156,10 +162,13 @@ int main(int argc, char *argv[]) {
     }
     
     //Initialize client for RPC communication
-    HooFSRPCClient client(serverIP, serverPort);
+    rpcClient = new HooFSRPCClient(serverIP, serverPort);
+
+    rpcClient->readdir(argv[3]);
     
-    struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
-    fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
-    
-    return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
+    char** fuseArgs = argv + 2;
+    //struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
+    //fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
+    //return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
+    return 0;
 }
