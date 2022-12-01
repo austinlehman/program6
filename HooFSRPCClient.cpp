@@ -204,3 +204,83 @@ int HooFSRPCClient::write(int fd, int size, int offset, const char *data) {
     
     return retBytesWritten;
 }
+
+int HooFSRPCClient::chmod(const char *path, int mode) {
+
+    //Response of the chmod call for success/fail
+    int ret = -1;
+
+    //Call the server to chmod file
+    try {
+        value res;
+        ourClient.call(serverURL, _chmod, "si", &res, path, mode);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
+    return ret;
+}
+
+int HooFSRPCClient::chown(const char *path, int uid, int gid) {
+
+    //Response of the chown call for success/fail
+    int ret = -1;
+
+    //Call the server to chown file
+    try {
+        value res;
+        ourClient.call(serverURL, _chown, "sii", &res, path, uid, gid);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
+    return ret;
+}
+
+int HooFSRPCClient::utime(const char *path, struct stat *uBuf) {
+
+    //Response of the utime call for success/fail
+    int ret = -1;
+
+    //Call the server to utime file
+    try {
+        value res;
+        ourClient.call(serverURL, _utime, "sS", &res, path, uBuf);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
+    return ret;
+}
+
+int HooFSRPCClient::trunc(const char *path, int newSize) {
+
+    //Response of the truncate call for success/fail
+    int ret = -1;
+
+    //Call the server to truncate file
+    try {
+        value res;
+        ourClient.call(serverURL, _truncate, "si", &res, path, newSize);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
+    return ret;
+}
