@@ -135,9 +135,37 @@ class HooFSRPCClient {
          */
         int write(int fd, int size, int offset, const char *data);
 
+        /**
+         * Changes file permissions
+         * \param path directory path to operate over
+         * \param mode permission mode to change to
+         * \return Success indicator
+         */
         int chmod(const char *path, int mode);
+
+        /**
+         * Changes file owner or group
+         * \param path directory path to operate over
+         * \param uid new owner user id
+         * \param gid new owner group id
+         * \return Success indicator
+         */
         int chown(const char *path, int uid, int gid);
-        int utime(const char *path, struct stat *stbuf);
+
+        /**
+         * Modify file access time
+         * \param path directory path to operate over
+         * \param uBuf structure with new file access info
+         * \return Success indicator
+         */
+        int utime(const char *path, struct stat *uBuf);
+
+        /**
+         * Shrink or extend file size
+         * \param path directory path to operate over
+         * \param newSize size of the new file
+         * \return Success indicator
+         */
         int trunc(const char *path, int newSize);
 };
 
