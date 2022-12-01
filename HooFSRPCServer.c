@@ -246,17 +246,16 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
     
     /* Unload from decomposition */
     const char *path = (char *) initPath;
-    printf(path);
 
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
-
+   
     /* Read from directory */
     logMessage("Reading directory for %s\n", fullPath);
-    DIR *dirPtr = opendir(fullPath);
+    DIR *dirPtr;
     
-    if (dirPtr == NULL) {
+    if ((dirPtr = opendir(fullPath)) == NULL) {
         logMessage("opendir() failed: %s\n", strerror(errno));
         return xmlrpc_string_new(envP, "");
     }
@@ -265,22 +264,33 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
     int used = 0;
     char *buf = malloc(sizeof(char) * capacity);
     struct dirent *dirEntry;
+    //dirEntry = readdir(dirPtr);
     
     printf("segfault??\n");
-    while ((dirEntry = readdir(dirPtr)) != NULL) {
+    /*
+    while (dirEntry != NULL) {
         
-        char *tmp = dirEntry->d_name;
-        printf(strlen(tmp));
+        char *name = dirEntry->d_name;
         
         if (used + strlen(dirEntry->d_name) + 1 >= capacity) {
             capacity *= 2;
             buf = realloc(buf, capacity);
         }
+        
         strncat(buf, dirEntry->d_name, strlen(dirEntry->d_name)); //almost definitely wrong lol
         strncat(buf, " ", 1);
+        printf(buf);
+        
         used += strlen(dirEntry->d_name);
         used += 1;
+        dirEntry = readdir(dirPtr);
     }
+     */
+    errno = 0;
+    while ((dirEntry = readdir(dirPtr))) {
+        printf("%s\n", dirEntry->d_name);
+    }
+    
     printf("%s", buf);
     
     closedir(dirPtr);
