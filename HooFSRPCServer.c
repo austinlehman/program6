@@ -81,7 +81,6 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
  * Get file attributes
  */
 static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
-
     /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value* initPath;
     xmlrpc_value* initStBuf;
@@ -99,6 +98,7 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
 
+   
     /* Get attributes */
     logMessage("Getting attributes for %s\n", fullPath);
     if (lstat(fullPath, stbuf) == -1) {

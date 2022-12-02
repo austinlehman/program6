@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 
 #include "HooFSRPCClient.h"
@@ -42,9 +43,10 @@ HooFSRPCClient *rpcClient;
  */
 static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
-    printf("getattr\n\n\n");
+    printf("getattr\n");
     
-    //return rpcClient->getAttr(path, stbuf);
+    struct stat *s = rpcClient->getAttr(path, stbuf);
+    printf("done\n");
     return 0;
 }
 
