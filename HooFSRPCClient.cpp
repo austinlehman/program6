@@ -9,6 +9,7 @@
 //General includes
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 using namespace std;
 
@@ -24,7 +25,7 @@ HooFSRPCClient::~HooFSRPCClient() {
     
 }
 
-string HooFSRPCClient::readdir(const char *path) {
+char *HooFSRPCClient::readdir(const char *path) {
     string ret;
     //string s = path;
     //Read a directory listing
@@ -39,8 +40,10 @@ string HooFSRPCClient::readdir(const char *path) {
     } catch (...) {
         cerr << "Client threw unexpected error." << endl;
     }
-    
-    return ret;
+   
+    char str[ret.size()];
+    strncpy(str, ret.c_str(), ret.size());
+    return str;
 }
 
 int HooFSRPCClient::open(const char *path, int flags) {
