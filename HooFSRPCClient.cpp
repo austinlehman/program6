@@ -9,6 +9,7 @@
 //General includes
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 using namespace std;
 
@@ -24,16 +25,15 @@ HooFSRPCClient::~HooFSRPCClient() {
     
 }
 
-string HooFSRPCClient::readdir(const char *path) {
+char *HooFSRPCClient::readdir(const char *path) {
     string ret;
     //string s = path;
     //Read a directory listing
     try {
-        cout << "ABC";
-        cout << path << endl;
+        
         xmlrpc_c::value response;
         ourClient.call(serverURL, _readdir, "s", &response, path);
-        cout << "EFG";
+        
         //cout << xmlrpc_c::value_int(response) << endl;
         ret = xmlrpc_c::value_string(response);
     }
@@ -42,8 +42,10 @@ string HooFSRPCClient::readdir(const char *path) {
     } catch (...) {
         cerr << "Client threw unexpected error." << endl;
     }
-    
-    return ret;
+   
+    char str[ret.size()];
+    strncpy(str, ret.c_str(), ret.size());
+    return str;
 }
 
 int HooFSRPCClient::open(const char *path, int flags) {

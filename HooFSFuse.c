@@ -44,7 +44,7 @@ static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
     printf("getattr\n\n\n");
     
-    //return rpcClient->getAttr(path, (struct stat *) stbuf);
+    //return rpcClient->getAttr(path, stbuf);
     return 0;
 }
 
@@ -77,6 +77,9 @@ static int hoofs_truncate(const char *path, off_t newsize) {
 static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
                          offset, struct fuse_file_info *fi) {
     printf("readdir\n");
+    char *dir = rpcClient->readdir(path);
+    
+    printf("%s", dir);
     return 0;
 }
 
