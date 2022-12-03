@@ -131,6 +131,17 @@ class HooFSRPCClient {
         struct stat *getAttr(const char *path, struct stat *stbuf);
 
         /**
+         * Sets attributes in the current directory path
+         * \param path directory path to operate over
+         * \param name figure name
+         * \param name figure value
+         * \param name figure size
+         * \param name flags to be set
+         * \return Success indicator
+         */
+        int setxattr(const char *path, const char *name, const char *value, size_t size, int flags);
+
+        /**
          * Removes directory at the directory path
          * \param path directory path to operate over
          * \return Success indicator

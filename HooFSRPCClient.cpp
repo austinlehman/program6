@@ -229,6 +229,25 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
     return ret;
 }
 
+int HooFSRPCClient::setxattr(const char *path, const char *name, const char *value, size_t size, int flags) {
+    //Response of the setattr call for success/fail
+    int ret = -1;
+
+    //Call the server to get a setattr response
+    try {
+        value res;
+        ourClient.call(serverURL, _setxattr, "sssii", &res, path, name, value, size, flags);
+        ret = value_int(res);
+    }
+    catch (exception const& e) {
+        cerr << "Client threw error: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Client threw unexpected error." << endl;
+    }
+
+    return ret;
+}
+
 
 int HooFSRPCClient::rmdir(const char *path) {
 
