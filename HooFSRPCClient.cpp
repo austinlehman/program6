@@ -17,6 +17,30 @@ using namespace std;
 //#include <xmlrpccpp.h>
 #include "HooFSRPCClient.h"
 
+value_struct statToXML(struct stat *myStat) {
+    // Make the map value 'structData'
+    map<std::string, xmlrpc_c::value> structData;
+    pair<std::string, xmlrpc_c::value> ino("st_ino", value_int((int)myStat->st_ino));
+    pair<std::string, xmlrpc_c::value> size("st_size", value_int((int)myStat->st_size));
+    pair<std::string, xmlrpc_c::value> dev("st_dev", value_int((int)myStat->st_dev));
+    pair<std::string, xmlrpc_c::value> mode("st_mode", value_int((int)myStat->st_mode));
+    pair<std::string, xmlrpc_c::value> nlink("st_nlink", value_int((int)myStat->st_nlink));
+    pair<std::string, xmlrpc_c::value> uid("st_uid", value_int((int)myStat->st_uid));
+    pair<std::string, xmlrpc_c::value> gid("st_gid", value_int((int)myStat->st_gid));
+    
+    structData.insert(ino);
+    structData.insert(size);
+    structData.insert(dev);
+    structData.insert(mode);
+    structData.insert(nlink);
+    structData.insert(uid);
+    structData.insert(gid);
+    
+    // Make an XML-RPC struct out of it
+    xmlrpc_c::value_struct param1(structData);
+    return param1;
+}
+
 HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
     serverURL = "http://" + ip + ":" + to_string(serverPort) + "/RPC2";
 }
@@ -43,6 +67,7 @@ char *HooFSRPCClient::readdir(const char *path) {
    
     char str[ret.size()];
     strncpy(str, ret.c_str(), ret.size());
+    
     return str;
 }
 
@@ -135,9 +160,13 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
     //Call the server to get attributes
     try {
         xmlrpc_c::value response;
-        cout << "calling" << endl;
-        
-        ourClient.call(serverURL, _getAttr, "sS", &response, path, *stbuf);
+        //value_struct statBuf = statToXML(stbuf);
+        //ourClient.call(serverURL, _getAttr, "sS", &response, path, *stbuf);
+        //ourClient.call(serverURL, _getAttr, "sS", &response, path, &stbuf);
+        paramList params;
+        params.add(value_string(path));
+        params.add(statToXML(stbuf));
+         
         xmlrpc_c::value_struct res(response);
         ret = (struct stat *)(&res);
     }

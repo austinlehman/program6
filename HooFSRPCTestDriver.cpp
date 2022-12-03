@@ -49,7 +49,14 @@ int main(int argc, const char * argv[]) {
     client.create("hi.txt", 0777);
     cout << "created hi.txt successfully" << endl << endl;
     
-    cout << client.readdir("./") << endl;
+    cout << "calling readdir on ./" << endl;
+    cout << client.readdir("./") << endl << endl;
+    
+    cout << "calling getattr on hi.txt" << endl;
+    struct stat stbuf;
+    client.getAttr("hi.txt", &stbuf);
+    cout << stbuf.st_size << endl;
+
     
     cout << "opening hi.txt for reading and writing" << endl;
     int fd = client.open("hi.txt", O_RDWR);
