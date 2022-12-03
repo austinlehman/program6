@@ -45,8 +45,7 @@ static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
     printf("getattr\n");
     
-    struct stat *s = rpcClient->getAttr(path, stbuf);
-    printf("done\n");
+    rpcClient->getAttr(path, stbuf);
     return 0;
 }
 
@@ -186,8 +185,8 @@ int main(int argc, char *argv[]) {
         fuseArgs[i] = argv[i + 2];
     }
     
-    //struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
-    //fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
-    //return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
-    return 0;
+    struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
+    fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
+    return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
+    //return 0;
 }
