@@ -166,7 +166,9 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
         paramList params;
         params.add(value_string(path));
         params.add(statToXML(stbuf));
-         
+     
+        ourClient.call(serverURL, _getAttr, params, &response);
+        
         xmlrpc_c::value_struct res(response);
         ret = (struct stat *)(&res);
     }
