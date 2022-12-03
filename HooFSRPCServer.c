@@ -77,16 +77,47 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
     return fullPath;
 }
 
+
+static xmlrpc_value *statToXML(xmlrpc_env *envP, struct stat* mystat) {
+    xmlrpc_value *toRet = xmlrpc_struct_new(envP);
+    //get the values
+    xmlrpc_value *ino = xmlrpc_int_new(envP, (int)mystat->st_ino);
+    
+    xmlrpc_value *size = xmlrpc_int_new(envP, (int)mystat->st_size);
+    xmlrpc_value *dev = xmlrpc_int_new(envP, (int)mystat->st_dev);
+    xmlrpc_value *mode = xmlrpc_int_new(envP, (int)mystat->st_mode);
+    xmlrpc_value *nlink = xmlrpc_int_new(envP, (int)mystat->st_nlink);
+    xmlrpc_value *uid = xmlrpc_int_new(envP, (int)mystat->st_uid);
+    xmlrpc_value *gid = xmlrpc_int_new(envP, (int)mystat->st_gid);
+    
+    //set the struct values
+    xmlrpc_struct_set_value(envP, toRet, "st_ino", ino);
+    xmlrpc_struct_set_value(envP, toRet, "st_size", size);
+    xmlrpc_struct_set_value(envP, toRet, "st_dev", dev);
+    xmlrpc_struct_set_value(envP, toRet, "st_mode", mode);
+    xmlrpc_struct_set_value(envP, toRet, "st_nlink", nlink);
+    xmlrpc_struct_set_value(envP, toRet, "st_uid", uid);
+    xmlrpc_struct_set_value(envP, toRet, "st_gid", gid);
+    
+    return toRet;
+}
+
+
 /*
  * Get file attributes
  */
 static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
     /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value* initPath;
-    xmlrpc_value* initStBuf;
+    xmlrpc_value* initStBuf = NULL;
 
+    printf("in getattr\n");
     /* Syphon off values from parameters */
-    xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, &initStBuf);
+    xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, initStBuf);
+   
+    printf("decomposed\n");
+    
+    
     if(envP->fault_occurred) {
         return NULL;
     }
