@@ -43,13 +43,24 @@ string const _truncate("rpc.truncate");
 string const _rename("rpc.rename");
 
 //stat names
-string const _ino("st_ino");
-string const _size("st_size");
 string const _dev("st_dev");
+string const _ino("st_ino");
 string const _mode("st_mode");
 string const _nlink("st_nlink");
 string const _uid("st_uid");
 string const _gid("st_gid");
+string const _rdev("st_rdev");
+string const _size("st_size");
+string const _blksize("st_blksize");
+string const _blocks("st_blocks");
+string const _atime("st_atime");
+string const _mtime("st_mtime");
+string const _ctime("st_ctime");
+
+
+
+
+
 
 /**
  * HooFDRPCClient is the client to implement the action

@@ -20,21 +20,33 @@ using namespace std;
 value_struct statToXML(struct stat *myStat) {
     // Make the map value 'structData'
     map<std::string, xmlrpc_c::value> structData;
-    pair<std::string, xmlrpc_c::value> ino("st_ino", value_int((int)myStat->st_ino));
-    pair<std::string, xmlrpc_c::value> size("st_size", value_int((int)myStat->st_size));
-    pair<std::string, xmlrpc_c::value> dev("st_dev", value_int((int)myStat->st_dev));
-    pair<std::string, xmlrpc_c::value> mode("st_mode", value_int((int)myStat->st_mode));
-    pair<std::string, xmlrpc_c::value> nlink("st_nlink", value_int((int)myStat->st_nlink));
-    pair<std::string, xmlrpc_c::value> uid("st_uid", value_int((int)myStat->st_uid));
-    pair<std::string, xmlrpc_c::value> gid("st_gid", value_int((int)myStat->st_gid));
+    pair<std::string, xmlrpc_c::value> dev(_dev, value_int((int)myStat->st_dev));
+    pair<std::string, xmlrpc_c::value> ino(_ino, value_int((int)myStat->st_ino));
+    pair<std::string, xmlrpc_c::value> mode(_mode, value_int((int)myStat->st_mode));
+    pair<std::string, xmlrpc_c::value> nlink(_nlink, value_int((int)myStat->st_nlink));
+    pair<std::string, xmlrpc_c::value> uid(_uid, value_int((int)myStat->st_uid));
+    pair<std::string, xmlrpc_c::value> gid(_gid, value_int((int)myStat->st_gid));
+    pair<std::string, xmlrpc_c::value> rdev(_rdev, value_int((int)myStat->st_rdev));
+    pair<std::string, xmlrpc_c::value> size(_size, value_int((int)myStat->st_size));
+    pair<std::string, xmlrpc_c::value> blksize(_blksize, value_int((int)myStat->st_blksize));
+    pair<std::string, xmlrpc_c::value> blocks(_blocks, value_int((int)myStat->st_blocks));
+    pair<std::string, xmlrpc_c::value> atime(_atime, value_int((int)myStat->st_atime));
+    pair<std::string, xmlrpc_c::value> mtime(_mtime, value_int((int)myStat->st_mtime));
+    pair<std::string, xmlrpc_c::value> ctime(_ctime, value_int((int)myStat->st_ctime));
     
-    structData.insert(ino);
-    structData.insert(size);
     structData.insert(dev);
+    structData.insert(ino);
     structData.insert(mode);
     structData.insert(nlink);
     structData.insert(uid);
     structData.insert(gid);
+    structData.insert(rdev);
+    structData.insert(size);
+    structData.insert(blksize);
+    structData.insert(blocks);
+    structData.insert(atime);
+    structData.insert(mtime);
+    structData.insert(ctime);
     
     // Make an XML-RPC struct out of it
     xmlrpc_c::value_struct param1(structData);
@@ -44,21 +56,34 @@ value_struct statToXML(struct stat *myStat) {
 struct stat *XMLToStat(value_struct stat) {
     struct stat toRet;
     std::map<std::string, xmlrpc_c::value> info = stat.cvalue();
-    int ino = value_int(info.at(_ino));
-    int size = value_int(info.at(_size));
+    
     int dev = value_int(info.at(_dev));
+    int ino = value_int(info.at(_ino));
     int mode = value_int(info.at(_mode));
     int nlink = value_int(info.at(_nlink));
     int uid = value_int(info.at(_uid));
     int gid = value_int(info.at(_gid));
+    int rdev = value_int(info.at(_rdev));
+    int size = value_int(info.at(_size));
+    int blksize = value_int(info.at(_blksize));
+    int blocks = value_int(info.at(_blocks));
+    int atime = value_int(info.at(_atime));
+    int mtime = value_int(info.at(_mtime));
+    int ctime = value_int(info.at(_ctime));
     
-    toRet.st_ino = ino;
-    toRet.st_size = size;
     toRet.st_dev = dev;
+    toRet.st_ino = ino;
     toRet.st_mode = mode;
     toRet.st_nlink = nlink;
     toRet.st_uid = uid;
     toRet.st_gid = gid;
+    toRet.st_rdev = rdev;
+    toRet.st_size = size;
+    toRet.st_blksize = blksize;
+    toRet.st_blocks = blocks;
+    toRet.st_atime = atime;
+    toRet.st_mtime = mtime;
+    toRet.st_ctime = ctime;
     
     return &toRet;
 }
