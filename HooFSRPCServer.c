@@ -81,13 +81,19 @@ static char *getFullPath(const char *path, char *fullPath, size_t n) {
 static xmlrpc_value *statToXML(xmlrpc_env *envP, struct stat mystat) {
     xmlrpc_value *toRet = xmlrpc_struct_new(envP);
     //get the values
-    xmlrpc_value *ino = xmlrpc_int_new(envP, (int)mystat.st_ino);
-    xmlrpc_value *size = xmlrpc_int_new(envP, (int)mystat.st_size);
     xmlrpc_value *dev = xmlrpc_int_new(envP, (int)mystat.st_dev);
+    xmlrpc_value *ino = xmlrpc_int_new(envP, (int)mystat.st_ino);
     xmlrpc_value *mode = xmlrpc_int_new(envP, (int)mystat.st_mode);
     xmlrpc_value *nlink = xmlrpc_int_new(envP, (int)mystat.st_nlink);
     xmlrpc_value *uid = xmlrpc_int_new(envP, (int)mystat.st_uid);
     xmlrpc_value *gid = xmlrpc_int_new(envP, (int)mystat.st_gid);
+    xmlrpc_value *rdev = xmlrpc_int_new(envP, (int)mystat.st_rdev);
+    xmlrpc_value *size = xmlrpc_int_new(envP, (int)mystat.st_size);
+    xmlrpc_value *blksize = xmlrpc_int_new(envP, (int)mystat.st_blksize);
+    xmlrpc_value *blocks = xmlrpc_int_new(envP, (int)mystat.st_blocks);
+    xmlrpc_value *atime = xmlrpc_int_new(envP, (int)mystat.st_atime);
+    xmlrpc_value *mtime = xmlrpc_int_new(envP, (int)mystat.st_mtime);
+    xmlrpc_value *ctime = xmlrpc_int_new(envP, (int)mystat.st_ctime);
     
     
     logMessage("Size: %d\n", mystat.st_size);
@@ -99,6 +105,12 @@ static xmlrpc_value *statToXML(xmlrpc_env *envP, struct stat mystat) {
     xmlrpc_struct_set_value(envP, toRet, "st_nlink", nlink);
     xmlrpc_struct_set_value(envP, toRet, "st_uid", uid);
     xmlrpc_struct_set_value(envP, toRet, "st_gid", gid);
+    xmlrpc_struct_set_value(envP, toRet, "st_rdev", rdev);
+    xmlrpc_struct_set_value(envP, toRet, "st_blksize", blksize);
+    xmlrpc_struct_set_value(envP, toRet, "st_blocks", blocks);
+    xmlrpc_struct_set_value(envP, toRet, "st_atime", atime);
+    xmlrpc_struct_set_value(envP, toRet, "st_mtime", mtime);
+    xmlrpc_struct_set_value(envP, toRet, "st_ctime", ctime);
     
     return toRet;
 }
@@ -110,27 +122,38 @@ static xmlrpc_value *statToXML(xmlrpc_env *envP, struct stat mystat) {
 static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
     /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value* initPath;
-    xmlrpc_int ino;
-    xmlrpc_int size;
     xmlrpc_int dev;
+    xmlrpc_int ino;
     xmlrpc_int mode;
     xmlrpc_int nlink;
     xmlrpc_int uid;
     xmlrpc_int gid;
-    
+    xmlrpc_int rdev;
+    xmlrpc_int size;
+    xmlrpc_int blksize;
+    xmlrpc_int blocks;
+    xmlrpc_int atime;
+    xmlrpc_int mtime;
+    xmlrpc_int ctime;
     
     
 
     
     /* Syphon off values from parameters */
-    xmlrpc_decompose_value(envP, paramArrayP, "(s{s:i,s:i,s:i,s:i,s:i,s:i,s:i,*})", &initPath,
-                           "st_ino", &ino,
-                           "st_size", &size,
+    xmlrpc_decompose_value(envP, paramArrayP, "(s{s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,*})", &initPath,
                            "st_dev", &dev,
+                           "st_ino", &ino,
                            "st_mode", &mode,
                            "st_nlink", &nlink,
                            "st_uid", &uid,
-                           "st_gid", &gid);
+                           "st_gid", &gid,
+                           "st_rdev", &rdev,
+                           "st_size", &size,
+                           "st_blksize", &blksize,
+                           "st_blocks", &blocks,
+                           "st_atime", &atime,
+                           "st_mtime", &mtime,
+                           "st_ctime", &ctime);
    
     
     if(envP->fault_occurred) {
@@ -147,6 +170,12 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     stbuf.st_nlink = (int) nlink;
     stbuf.st_uid = (int) uid;
     stbuf.st_gid = (int) gid;
+    stbuf.st_rdev = (int) rdev;
+    stbuf.st_blksize = (int) blksize;
+    stbuf.st_blocks = (int) blocks;
+    stbuf.st_atime = (int) atime;
+    stbuf.st_mtime = (int) mtime;
+    stbuf.st_ctime = (int) ctime;
     
 
     size_t pathLen = getFullPathLength(path);

@@ -43,13 +43,24 @@ string const _truncate("rpc.truncate");
 string const _rename("rpc.rename");
 
 //stat names
-string const _ino("st_ino");
-string const _size("st_size");
 string const _dev("st_dev");
+string const _ino("st_ino");
 string const _mode("st_mode");
 string const _nlink("st_nlink");
 string const _uid("st_uid");
 string const _gid("st_gid");
+string const _rdev("st_rdev");
+string const _size("st_size");
+string const _blksize("st_blksize");
+string const _blocks("st_blocks");
+string const _atime("st_atime");
+string const _mtime("st_mtime");
+string const _ctime("st_ctime");
+
+
+
+
+
 
 /**
  * HooFDRPCClient is the client to implement the action
@@ -118,6 +129,17 @@ class HooFSRPCClient {
          * \return list of attributes
          */
         struct stat *getAttr(const char *path, struct stat *stbuf);
+
+        /**
+         * Sets attributes in the current directory path
+         * \param path directory path to operate over
+         * \param name figure name
+         * \param name figure value
+         * \param name figure size
+         * \param name flags to be set
+         * \return Success indicator
+         */
+        int setxattr(const char *path, const char *name, const char *value, size_t size, int flags);
 
         /**
          * Removes directory at the directory path
