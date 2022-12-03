@@ -34,7 +34,6 @@ const int PORT_ARG = 2;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
-
 static char *fileSystemRoot;
 HooFSRPCClient *rpcClient;
 
@@ -49,39 +48,49 @@ static int hoofs_getattr(const char *path, struct stat *stbuf) {
     return 0;
 }
 
-static int hoofs_setxattr(const char *path, const char *name, const char *value,
-                          size_t size, int flags) {
+static int hoofs_setxattr(const char *path, const char *name, const char *value, size_t size, int flags) {
     printf("setxattr\n");
+
+    rpcClient->setxattr(path, name, value, size, flags);
     return 0;
 }
 
 static int hoofs_chmod(const char *path, mode_t mode) {
     printf("chmod\n");
+
+    rpcClient->chmod(path, mode);
     return 0;
 }
 
 static int hoofs_chown(const char *path, uid_t uid, gid_t gid) {
     printf("chown\n");
+
+    rpcClient->chown(path, uid, gid);
     return 0;
 }
 
 static int hoofs_utime(const char *path, struct utimbuf *ubuf) {
     printf("utime\n");
+
+    rpcClient->utime(path, ubuf);
     return 0;
 }
 
 static int hoofs_truncate(const char *path, off_t newsize) {
     printf("truncate\n");
+
+    rpcClient->trunc(path, newSize);
     return 0;
 }
 
 static int hoofs_rename(const char *path, const char *newPath) {
     printf("rename\n");
+
+    rpcClient->rename(path, newPath);
     return 0;
 }
 
-static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
-                         offset, struct fuse_file_info *fi) {
+static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
     printf("readdir\n");
     char *dir = rpcClient->readdir(path);
     
@@ -92,21 +101,30 @@ static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
 static int hoofs_open(const char *path, struct fuse_file_info *fi) {
     // Compute the full path name
     printf("open\n");
+
+    rpcClient->open(path, 0);
     return 0;
 }
 
 static int hoofs_release(const char *path, struct fuse_file_info *fi) {
     printf("release\n");
+
+    //HOW DO WE CALL THIS?@??!@
+
     return 0;
 }
 
 static int hoofs_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
     printf("create\n");
+
+    rpcClient->create(path, mode);
     return 0;
 }
 
 static int hoofs_unlink(const char *path) {
     printf("unlink\n");
+
+    rpcClient->unlink(path);
     return 0;
 }
 
@@ -115,9 +133,11 @@ static int hoofs_rmdir(const char *path) {
     return hoofs_unlink(path);
 }
 
-static int hoofs_read(const char *path, char *buf, size_t size, off_t offset,
-                      struct fuse_file_info *fi) {
+static int hoofs_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
     printf("read\n");
+
+    //rpcClient->read(); PATH BUT WE NEED a FD (SAME for write)
+
     return 0;
 }
 
