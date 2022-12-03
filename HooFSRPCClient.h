@@ -42,6 +42,15 @@ string const _utime("rpc.utime");
 string const _truncate("rpc.truncate");
 string const _rename("rpc.rename");
 
+//stat names
+string const _ino("st_ino");
+string const _size("st_size");
+string const _dev("st_dev");
+string const _mode("st_mode");
+string const _nlink("st_nlink");
+string const _uid("st_uid");
+string const _gid("st_gid");
+
 /**
  * HooFDRPCClient is the client to implement the action
  * methods for XMLRPC

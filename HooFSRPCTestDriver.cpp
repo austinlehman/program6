@@ -53,9 +53,9 @@ int main(int argc, const char * argv[]) {
     cout << client.readdir("./") << endl << endl;
     
     cout << "calling getattr on hi.txt" << endl;
-    struct stat stbuf;
-    client.getAttr("hi.txt", &stbuf);
-    cout << stbuf.st_size << endl;
+    struct stat *stbuf;
+    stbuf = client.getAttr("hi.txt", stbuf);
+    cout << stbuf->st_size << endl;
 
     
     cout << "opening hi.txt for reading and writing" << endl;

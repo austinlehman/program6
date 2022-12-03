@@ -41,6 +41,28 @@ value_struct statToXML(struct stat *myStat) {
     return param1;
 }
 
+struct stat *XMLToStat(value_struct stat) {
+    struct stat toRet;
+    std::map<std::string, xmlrpc_c::value> info = stat.cvalue();
+    int ino = value_int(info.at(_ino));
+    int size = value_int(info.at(_size));
+    int dev = value_int(info.at(_dev));
+    int mode = value_int(info.at(_mode));
+    int nlink = value_int(info.at(_nlink));
+    int uid = value_int(info.at(_uid));
+    int gid = value_int(info.at(_gid));
+    
+    toRet.st_ino = ino;
+    toRet.st_size = size;
+    toRet.st_dev = dev;
+    toRet.st_mode = mode;
+    toRet.st_nlink = nlink;
+    toRet.st_uid = uid;
+    toRet.st_gid = gid;
+    
+    return &toRet;
+}
+
 HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
     serverURL = "http://" + ip + ":" + to_string(serverPort) + "/RPC2";
 }
@@ -169,8 +191,9 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
      
         ourClient.call(serverURL, _getAttr, params, &response);
         
-        xmlrpc_c::value_struct res(response);
-        ret = (struct stat *)(&res);
+        value_struct res(response);
+        
+        ret = XMLToStat(res);
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
