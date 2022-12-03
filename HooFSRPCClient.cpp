@@ -194,6 +194,7 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
         value_struct res(response);
         
         ret = XMLToStat(res);
+        
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;

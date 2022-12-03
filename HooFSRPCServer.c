@@ -89,6 +89,9 @@ static xmlrpc_value *statToXML(xmlrpc_env *envP, struct stat mystat) {
     xmlrpc_value *uid = xmlrpc_int_new(envP, (int)mystat.st_uid);
     xmlrpc_value *gid = xmlrpc_int_new(envP, (int)mystat.st_gid);
     
+    
+    logMessage("Size: %d\n", mystat.st_size);
+    
     xmlrpc_struct_set_value(envP, toRet, "st_ino", ino);
     xmlrpc_struct_set_value(envP, toRet, "st_size", size);
     xmlrpc_struct_set_value(envP, toRet, "st_dev", dev);
@@ -157,8 +160,6 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
         logMessage("lstat() failed: %s\n", strerror(errno));
         return xmlrpc_int_new(envP, -errno);
     }
-    
-    printf("%d", stbuf.st_size);
     
     return statToXML(envP, stbuf);
 }

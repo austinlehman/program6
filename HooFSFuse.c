@@ -46,6 +46,7 @@ static int hoofs_getattr(const char *path, struct stat *stbuf) {
     printf("getattr\n");
     
     rpcClient->getAttr(path, stbuf);
+    printf("\n\nSize: %d\n\n", stbuf->st_size);
     return 0;
 }
 
