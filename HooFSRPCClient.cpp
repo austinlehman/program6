@@ -55,7 +55,7 @@ value_struct statToXML(struct stat *myStat) {
 }
 
 struct stat *XMLToStat(value_struct stat) {
-    struct stat toRet;
+    struct stat *toRet = new struct stat();
     std::map<std::string, xmlrpc_c::value> info = stat.cvalue();
     
     int dev = value_int(info.at(_dev));
@@ -72,21 +72,21 @@ struct stat *XMLToStat(value_struct stat) {
     int mtime = value_int(info.at(_mtime));
     int ctime = value_int(info.at(_ctime));
     
-    toRet.st_dev = dev;
-    toRet.st_ino = ino;
-    toRet.st_mode = mode;
-    toRet.st_nlink = nlink;
-    toRet.st_uid = uid;
-    toRet.st_gid = gid;
-    toRet.st_rdev = rdev;
-    toRet.st_size = size;
-    toRet.st_blksize = blksize;
-    toRet.st_blocks = blocks;
-    toRet.st_atime = atime;
-    toRet.st_mtime = mtime;
-    toRet.st_ctime = ctime;
+    toRet->st_dev = dev;
+    toRet->st_ino = ino;
+    toRet->st_mode = mode;
+    toRet->st_nlink = nlink;
+    toRet->st_uid = uid;
+    toRet->st_gid = gid;
+    toRet->st_rdev = rdev;
+    toRet->st_size = size;
+    toRet->st_blksize = blksize;
+    toRet->st_blocks = blocks;
+    toRet->st_atime = atime;
+    toRet->st_mtime = mtime;
+    toRet->st_ctime = ctime;
     
-    return &toRet;
+    return toRet;
 }
 
 value_struct utimbufToXML(struct utimbuf *buf) {
@@ -126,7 +126,7 @@ char *HooFSRPCClient::readdir(const char *path) {
         cerr << "Client threw unexpected error." << endl;
     }
    
-    char str[ret.size()];
+    char *str = new char[ret.size()];
     strncpy(str, ret.c_str(), ret.size());
     
     return str;

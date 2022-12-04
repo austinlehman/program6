@@ -34,7 +34,6 @@ const int PORT_ARG = 2;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
-static char *fileSystemRoot;
 int serverPort = 0;
 char *port = NULL;
 char *serverIP = NULL;
@@ -50,38 +49,13 @@ static void logMessage(const char *format, ...) {
 }
 
 /*
- * Compute the byte length of the full path string
- * from the root (fileSystemRoot + path)
- */
-static size_t getFullPathLength(const char *path) {
-    return strlen(fileSystemRoot) + strlen(path) + 1;
-}
-
-/*
- * Compute the full path from the root (fileSystemRoot + path).
- * We assume the user only wants up to n-1 bytes of the full path.
- */
-static char *getFullPath(const char *path, char *fullPath, size_t n) {
-    strncpy(fullPath, fileSystemRoot, n);
-    strncat(fullPath, path, n);
-    return fullPath;
-}
-
-static char *pathToFullPath(const char *path) {
-    size_t pathLen = getFullPathLength(path);
-    char fullPath[pathLen];
-    return getFullPath(path, fullPath, pathLen);
-}
-
-/*
  * Get file attributes
  */
 static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
     printf("getattr\n");
-    logMessage("%s\n", pathToFullPath(path));
-    stbuf = rpcClient->getAttr(pathToFullPath(path));
-    printf("\n\nSize: %d\n\n", stbuf->st_size);
+    logMessage("%s\n", path);
+    stbuf = rpcClient->getAttr(path);
     return 0;
 }
 
@@ -116,7 +90,7 @@ static int hoofs_utime(const char *path, struct utimbuf *ubuf) {
 static int hoofs_truncate(const char *path, off_t newSize) {
     printf("truncate\n");
 
-    rpcClient->trunc(path, newSize);
+    rpcClient->trunc(path, (int)newSize);
     return 0;
 }
 
@@ -130,7 +104,7 @@ static int hoofs_rename(const char *path, const char *newPath) {
 static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
     printf("readdir\n");
     
-    char *dir = rpcClient->readdir(pathToFullPath(path));
+    char *dir = rpcClient->readdir(path);
     
     printf("%s", dir);
     return 0;

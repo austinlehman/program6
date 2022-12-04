@@ -325,7 +325,7 @@ static xmlrpc_value *rpc_readdir(xmlrpc_env *const envP,  xmlrpc_value *const pa
      */
     
     //printf("%s", buf);
-    
+    printf("%s\n", buf);
     closedir(dirPtr);
 
     return xmlrpc_string_new(envP, buf);
