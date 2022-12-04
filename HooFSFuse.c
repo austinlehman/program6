@@ -121,7 +121,7 @@ static int hoofs_open(const char *path, struct fuse_file_info *fi) {
 static int hoofs_release(const char *path, struct fuse_file_info *fi) {
     printf("release\n");
 
-    //HOW DO WE CALL THIS?@??!@
+    //NEED TO CHANGE SIGNATURE IN HOOFS
 
     return 0;
 }
