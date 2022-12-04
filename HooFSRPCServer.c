@@ -125,7 +125,6 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     
     /* Syphon off values from parameters */
     xmlrpc_decompose_value(envP, paramArrayP, "(s)", &initPath);
-    
     if(envP->fault_occurred) {
         return NULL;
     }

@@ -35,7 +35,43 @@ const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
 static char *fileSystemRoot;
-HooFSRPCClient *rpcClient;
+int serverPort = 0;
+char *port = NULL;
+char *serverIP = NULL;
+HooFSRPCClient *rpcClient = NULL;
+
+/*
+ * Write given log message to console
+ */
+static void logMessage(const char *format, ...) {
+    va_list argList;
+    va_start(argList, format);
+    vfprintf(stdout, format, argList);
+}
+
+/*
+ * Compute the byte length of the full path string
+ * from the root (fileSystemRoot + path)
+ */
+static size_t getFullPathLength(const char *path) {
+    return strlen(fileSystemRoot) + strlen(path) + 1;
+}
+
+/*
+ * Compute the full path from the root (fileSystemRoot + path).
+ * We assume the user only wants up to n-1 bytes of the full path.
+ */
+static char *getFullPath(const char *path, char *fullPath, size_t n) {
+    strncpy(fullPath, fileSystemRoot, n);
+    strncat(fullPath, path, n);
+    return fullPath;
+}
+
+static char *pathToFullPath(const char *path) {
+    size_t pathLen = getFullPathLength(path);
+    char fullPath[pathLen];
+    return getFullPath(path, fullPath, pathLen);
+}
 
 /*
  * Get file attributes
@@ -43,8 +79,8 @@ HooFSRPCClient *rpcClient;
 static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
     printf("getattr\n");
-    
-    stbuf = rpcClient->getAttr(path);
+    logMessage("%s\n", pathToFullPath(path));
+    stbuf = rpcClient->getAttr(pathToFullPath(path));
     printf("\n\nSize: %d\n\n", stbuf->st_size);
     return 0;
 }
@@ -93,7 +129,8 @@ static int hoofs_rename(const char *path, const char *newPath) {
 
 static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
     printf("readdir\n");
-    char *dir = rpcClient->readdir(path);
+    
+    char *dir = rpcClient->readdir(pathToFullPath(path));
     
     printf("%s", dir);
     return 0;
@@ -152,8 +189,15 @@ static struct fuse_operations hoofs_oper;
 
 static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
                          *outargs) {
-    if (key == FUSE_OPT_KEY_NONOPT && fileSystemRoot == NULL) {
-        fileSystemRoot = strdup(arg);
+    if (key == FUSE_OPT_KEY_NONOPT && (serverIP == NULL || port == NULL)) {
+        if(serverIP == NULL) {
+            printf("abc\n");
+            serverIP = strdup(arg);
+        }
+        else if (port == NULL) {
+            printf("def\n");
+            port = strdup(arg);
+        }
         return 0;
     }
     return 1;
@@ -165,7 +209,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    char *serverIP = argv[IP_ARG];
+    //serverIP = argv[IP_ARG];
     
     hoofs_oper.getattr = hoofs_getattr;
     hoofs_oper.setxattr = hoofs_setxattr;
@@ -185,29 +229,34 @@ int main(int argc, char *argv[]) {
 
     
     //Register and validate port
-    int serverPort;
-    sscanf(argv[PORT_ARG], "%d", &serverPort);
+    /*
     if(serverPort < PORTMIN || serverPort > PORTMAX) {
         fprintf(stderr, "ERROR: Server port %d invalid. Port must be in the range 0 - 65535\n", serverPort);
         exit(2);
     }
-    
+    */
     //Initialize client for RPC communication
-    rpcClient = new HooFSRPCClient(serverIP, serverPort);
+    
 
     //rpcClient->readdir(argv[3]);
     //rpcClient->create("hi.txt", 0777);
     //char** fuseArgs = argv+2;
     
-    char* fuseArgs[argc - 2];
-    fuseArgs[0] = argv[0];
+    //char* fuseArgs[argc - 2];
+    //fuseArgs[0] = argv[0];
     
-    for(int i = 1; i < argc - 2; i++) {
-        fuseArgs[i] = argv[i + 2];
-    }
+    //for(int i = 1; i < argc - 2; i++) {
+    //    fuseArgs[i] = argv[i + 2];
+    //}
     
-    struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
+    //struct fuse_args args = FUSE_ARGS_INIT(argc - 2, fuseArgs);
+    struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
     fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
+    fuse_opt_parse(&args, NULL, NULL, myfs_opt_proc);
+
+    sscanf(port, "%d", &serverPort);
+    rpcClient = new HooFSRPCClient(serverIP, serverPort);
+    
     return fuse_main(args.argc, args.argv, &hoofs_oper, NULL);
     //return 0;
 }
