@@ -191,11 +191,9 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
                          *outargs) {
     if (key == FUSE_OPT_KEY_NONOPT && (serverIP == NULL || port == NULL)) {
         if(serverIP == NULL) {
-            printf("abc\n");
             serverIP = strdup(arg);
         }
         else if (port == NULL) {
-            printf("def\n");
             port = strdup(arg);
         }
         return 0;
