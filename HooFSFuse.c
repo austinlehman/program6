@@ -34,9 +34,9 @@ const int PORT_ARG = 2;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
 
-int serverPort = 0;
-char *port = NULL;
-char *serverIP = NULL;
+static int serverPort = 0;
+static char *port = NULL;
+static char *serverIP = NULL;
 HooFSRPCClient *rpcClient = NULL;
 
 /*
@@ -106,7 +106,6 @@ static int hoofs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, of
     
     char *dir = rpcClient->readdir(path);
     
-    printf("%s", dir);
     return 0;
 }
 
@@ -114,15 +113,12 @@ static int hoofs_open(const char *path, struct fuse_file_info *fi) {
     // Compute the full path name
     printf("open\n");
 
-    rpcClient->open(path, 0);
+    fi->fh = (int) rpcClient->open(path, fi->flags);
     return 0;
 }
 
 static int hoofs_release(const char *path, struct fuse_file_info *fi) {
-    printf("release\n");
-
-    //NEED TO CHANGE SIGNATURE IN HOOFS
-
+    rpcClient->release(fi->fh);
     return 0;
 }
 
@@ -149,14 +145,16 @@ static int hoofs_read(const char *path, char *buf, size_t size, off_t offset, st
     printf("read\n");
 
     //rpcClient->read(); PATH BUT WE NEED a FD (SAME for write)
-
+    buf = rpcClient->read(fi->fh, size, offset);
     return 0;
 }
 
 static int hoofs_write(const char *path, const char *buf, size_t size, off_t
                        offset, struct fuse_file_info *fi) {
     printf("write\n");
-    return (int) 0;
+    rpcClient->write(fi->fh, size, offset, buf);
+    
+    return 0;
 }
 
 static struct fuse_operations hoofs_oper;
