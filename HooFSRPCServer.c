@@ -48,7 +48,7 @@ const int PORTMAX = 65535;
 
 
 /* Global variables */
-static char *fileSystemRoot = "./";
+static char *fileSystemRoot = ".";
 
 /*
  * Write given log message to console
