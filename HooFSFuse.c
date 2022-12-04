@@ -44,7 +44,7 @@ static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
     printf("getattr\n");
     
-    rpcClient->getAttr(path, stbuf);
+    stbuf = rpcClient->getAttr(path);
     printf("\n\nSize: %d\n\n", stbuf->st_size);
     return 0;
 }
@@ -77,7 +77,7 @@ static int hoofs_utime(const char *path, struct utimbuf *ubuf) {
     return 0;
 }
 
-static int hoofs_truncate(const char *path, off_t newsize) {
+static int hoofs_truncate(const char *path, off_t newSize) {
     printf("truncate\n");
 
     rpcClient->trunc(path, newSize);
@@ -161,7 +161,7 @@ static int myfs_opt_proc(void *data, const char *arg, int key, struct fuse_args
 
 int main(int argc, char *argv[]) {
     if (argc < NUM_ARGS) {
-        fprintf(stderr, "Usage: %s <server name/address> <server port> <fuse params>...\n", argv[0]);
+        fprintf(stderr, "Usage: %s <server name/address> <server port> <filesystem root> <fuse params>...\n", argv[0]);
         exit(1);
     }
     
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
     hoofs_oper.rmdir = hoofs_rmdir;
     hoofs_oper.read = hoofs_read;
     hoofs_oper.write = hoofs_write;
-    
+
     
     //Register and validate port
     int serverPort;

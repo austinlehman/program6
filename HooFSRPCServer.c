@@ -122,39 +122,9 @@ static xmlrpc_value *statToXML(xmlrpc_env *envP, struct stat mystat) {
 static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, void* serverInfo, void* callInfo) {
     /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value* initPath;
-    xmlrpc_int dev;
-    xmlrpc_int ino;
-    xmlrpc_int mode;
-    xmlrpc_int nlink;
-    xmlrpc_int uid;
-    xmlrpc_int gid;
-    xmlrpc_int rdev;
-    xmlrpc_int size;
-    xmlrpc_int blksize;
-    xmlrpc_int blocks;
-    xmlrpc_int atime;
-    xmlrpc_int mtime;
-    xmlrpc_int ctime;
-    
-    
-
     
     /* Syphon off values from parameters */
-    xmlrpc_decompose_value(envP, paramArrayP, "(s{s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,s:i,*})", &initPath,
-                           "st_dev", &dev,
-                           "st_ino", &ino,
-                           "st_mode", &mode,
-                           "st_nlink", &nlink,
-                           "st_uid", &uid,
-                           "st_gid", &gid,
-                           "st_rdev", &rdev,
-                           "st_size", &size,
-                           "st_blksize", &blksize,
-                           "st_blocks", &blocks,
-                           "st_atime", &atime,
-                           "st_mtime", &mtime,
-                           "st_ctime", &ctime);
-   
+    xmlrpc_decompose_value(envP, paramArrayP, "(s)", &initPath);
     
     if(envP->fault_occurred) {
         return NULL;
@@ -163,21 +133,7 @@ static xmlrpc_value* rpc_getattr(xmlrpc_env* envP, xmlrpc_value* paramArrayP, vo
     /* Unload from decomposition */
     const char *path = (char *)initPath;
     struct stat stbuf;
-    stbuf.st_ino = (int) ino;
-    stbuf.st_size = (int) size;
-    stbuf.st_dev = (int) dev;
-    stbuf.st_mode = (int) mode;
-    stbuf.st_nlink = (int) nlink;
-    stbuf.st_uid = (int) uid;
-    stbuf.st_gid = (int) gid;
-    stbuf.st_rdev = (int) rdev;
-    stbuf.st_blksize = (int) blksize;
-    stbuf.st_blocks = (int) blocks;
-    stbuf.st_atime = (int) atime;
-    stbuf.st_mtime = (int) mtime;
-    stbuf.st_ctime = (int) ctime;
     
-
     size_t pathLen = getFullPathLength(path);
     char fullPath[pathLen];
     getFullPath(path, fullPath, pathLen);
@@ -275,14 +231,18 @@ static xmlrpc_value *rpc_utime(xmlrpc_env *const envP,  xmlrpc_value *const para
 
     /* XMLRPC Attributes to unload parameter values into */
     xmlrpc_value *initPath;
-    xmlrpc_value *initUbuf;
+    xmlrpc_int actime;
+    xmlrpc_int modtime;
 
     /* Syphon off values from parameters */
-    xmlrpc_decompose_value(envP, paramArrayP, "(sS)", &initPath, &initUbuf);
+    xmlrpc_decompose_value(envP, paramArrayP, "(s{s:i,s:i})", &initPath, "actime", &actime, "modtime", &modtime);
+    
 
     /* Unload from decomposition */
     const char *path = (char *)initPath;
-    struct utimbuf *ubuf = (struct utimbuf *)initUbuf;
+    struct utimbuf *ubuf;
+    ubuf->actime = (time_t) actime;
+    ubuf->modtime = (time_t) modtime;
 
     /* Utime */
     logMessage("calling utime on %s", path);

@@ -11,6 +11,7 @@
 #include <string>
 #include <cstring>
 #include <cstdlib>
+#include <utime.h>
 using namespace std;
 
 //XMLRPC-C includes
@@ -86,6 +87,19 @@ struct stat *XMLToStat(value_struct stat) {
     toRet.st_ctime = ctime;
     
     return &toRet;
+}
+
+value_struct utimbufToXML(struct utimbuf *buf) {
+    map<std::string, xmlrpc_c::value> structData;
+    pair<std::string, xmlrpc_c::value> actime(_actime, value_int((int) buf->actime));
+    pair<std::string, xmlrpc_c::value> modtime(_modtime, value_int((int) buf->modtime));
+                                               
+    structData.insert(actime);
+    structData.insert(modtime);
+                                               
+                                               
+    xmlrpc_c::value_struct param1(structData);
+    return param1;
 }
 
 HooFSRPCClient::HooFSRPCClient(string ip, int serverPort) {
@@ -199,7 +213,7 @@ int HooFSRPCClient::release(int fd) {
 }
 
 
-struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
+struct stat *HooFSRPCClient::getAttr(const char *path) {
 
     //List of attributes to be returned
     struct stat *ret;
@@ -207,19 +221,14 @@ struct stat *HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
     //Call the server to get attributes
     try {
         xmlrpc_c::value response;
-        //value_struct statBuf = statToXML(stbuf);
-        //ourClient.call(serverURL, _getAttr, "sS", &response, path, *stbuf);
-        //ourClient.call(serverURL, _getAttr, "sS", &response, path, &stbuf);
         paramList params;
         params.add(value_string(path));
-        params.add(statToXML(stbuf));
      
         ourClient.call(serverURL, _getAttr, params, &response);
         
         value_struct res(response);
         
         ret = XMLToStat(res);
-        
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
@@ -236,7 +245,7 @@ int HooFSRPCClient::setxattr(const char *path, const char *name, const char *val
 
     //Call the server to get a setattr response
     try {
-        value res;
+        xmlrpc_c::value res;
         ourClient.call(serverURL, _setxattr, "sssii", &res, path, name, value, size, flags);
         ret = value_int(res);
     }
@@ -350,7 +359,7 @@ int HooFSRPCClient::chown(const char *path, int uid, int gid) {
     return ret;
 }
 
-int HooFSRPCClient::utime(const char *path, struct stat *uBuf) {
+int HooFSRPCClient::utime(const char *path, struct utimbuf *uBuf) {
 
     //Response of the utime call for success/fail
     int ret = -1;
@@ -358,7 +367,12 @@ int HooFSRPCClient::utime(const char *path, struct stat *uBuf) {
     //Call the server to utime file
     try {
         value res;
-        ourClient.call(serverURL, _utime, "sS", &res, path, uBuf);
+        //ourClient.call(serverURL, _utime, "sS", &res, path, uBuf);
+        paramList params;
+        params.add(value_string(path));
+        params.add(utimbufToXML(uBuf));
+        
+        ourClient.call(serverURL, _utime, params, &res);
         ret = value_int(res);
     }
     catch (exception const& e) {

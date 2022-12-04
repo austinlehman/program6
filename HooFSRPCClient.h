@@ -56,6 +56,8 @@ string const _blocks("st_blocks");
 string const _atime("st_atime");
 string const _mtime("st_mtime");
 string const _ctime("st_ctime");
+string const _actime("actime");
+string const _modtime("modtime");
 
 
 
@@ -125,10 +127,9 @@ class HooFSRPCClient {
         /**
          * Gets attributes in the current directory path
          * \param path directory path to operate over
-         * \param stbuf buffer
          * \return list of attributes
          */
-        struct stat *getAttr(const char *path, struct stat *stbuf);
+        struct stat *getAttr(const char *path);
 
         /**
          * Sets attributes in the current directory path
@@ -190,7 +191,7 @@ class HooFSRPCClient {
          * \param uBuf structure with new file access info
          * \return Success indicator
          */
-        int utime(const char *path, struct stat *uBuf);
+        int utime(const char *path, struct utimbuf *uBuf);
 
         /**
          * Shrink or extend file size
