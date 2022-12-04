@@ -156,7 +156,7 @@ class HooFSRPCClient {
          * \param offset how far from the head of the file to start reading
          * \return String of read bytes
          */
-        string read(int fd, int size, int offset);
+        char* read(int fd, int size, int offset);
 
         /**
          * Writes specified number of bytes to a file

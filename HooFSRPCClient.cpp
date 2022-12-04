@@ -279,16 +279,19 @@ int HooFSRPCClient::rmdir(const char *path) {
     return ret;
 }
 
-string HooFSRPCClient::read(int fd, int size, int offset) {
+char * HooFSRPCClient::read(int fd, int size, int offset) {
 
     //Data read from the read
     string retBuffer = "";
-
+    char buf[1000];
+    
     //Call the server to get a read response
     try {
         xmlrpc_c::value response;
         ourClient.call(serverURL, _read, "iii", &response, fd, size, offset);
         retBuffer = (string) value_string(response);
+        
+        strcpy(buf, retBuffer.c_str());
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
@@ -296,7 +299,7 @@ string HooFSRPCClient::read(int fd, int size, int offset) {
         cerr << "Client threw unexpected error." << endl;
     }
     
-    return retBuffer;
+    return buf;
 }
 
 int HooFSRPCClient::write(int fd, int size, int offset, const char *data) {
