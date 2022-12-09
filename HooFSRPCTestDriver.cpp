@@ -54,7 +54,7 @@ int main(int argc, const char * argv[]) {
     
     cout << "calling getattr on hi.txt" << endl;
     struct stat *stbuf;
-    stbuf = client.getAttr("hi.txt");
+    client.getAttr("hi.txt", stbuf);
     cout << "Size: " << stbuf->st_size << " (should be 0)" << endl;
 
     

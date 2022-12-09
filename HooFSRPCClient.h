@@ -17,6 +17,8 @@
 #include <sys/stat.h>
 #include <cstdlib>
 #include <cstring>
+#include <time.h>
+
 using namespace std;
 
 //XMLRPC-C Includes
@@ -51,8 +53,6 @@ string const _uid("st_uid");
 string const _gid("st_gid");
 string const _rdev("st_rdev");
 string const _size("st_size");
-string const _blksize("st_blksize");
-string const _blocks("st_blocks");
 string const _atime("st_atime");
 string const _mtime("st_mtime");
 string const _ctime("st_ctime");
@@ -127,9 +127,10 @@ class HooFSRPCClient {
         /**
          * Gets attributes in the current directory path
          * \param path directory path to operate over
-         * \return list of attributes
+         * \param stbuf the stat that is getting changed
+         * \return 0 on sucess
          */
-        struct stat *getAttr(const char *path);
+        int getAttr(const char *path, struct stat *stbuf);
 
         /**
          * Sets attributes in the current directory path

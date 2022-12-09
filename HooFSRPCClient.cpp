@@ -29,8 +29,6 @@ value_struct statToXML(struct stat *myStat) {
     pair<std::string, xmlrpc_c::value> gid(_gid, value_int((int)myStat->st_gid));
     pair<std::string, xmlrpc_c::value> rdev(_rdev, value_int((int)myStat->st_rdev));
     pair<std::string, xmlrpc_c::value> size(_size, value_int((int)myStat->st_size));
-    pair<std::string, xmlrpc_c::value> blksize(_blksize, value_int((int)myStat->st_blksize));
-    pair<std::string, xmlrpc_c::value> blocks(_blocks, value_int((int)myStat->st_blocks));
     pair<std::string, xmlrpc_c::value> atime(_atime, value_int((int)myStat->st_atime));
     pair<std::string, xmlrpc_c::value> mtime(_mtime, value_int((int)myStat->st_mtime));
     pair<std::string, xmlrpc_c::value> ctime(_ctime, value_int((int)myStat->st_ctime));
@@ -43,8 +41,6 @@ value_struct statToXML(struct stat *myStat) {
     structData.insert(gid);
     structData.insert(rdev);
     structData.insert(size);
-    structData.insert(blksize);
-    structData.insert(blocks);
     structData.insert(atime);
     structData.insert(mtime);
     structData.insert(ctime);
@@ -54,8 +50,7 @@ value_struct statToXML(struct stat *myStat) {
     return param1;
 }
 
-struct stat *XMLToStat(value_struct stat) {
-    struct stat *toRet = new struct stat();
+void XMLToStat(value_struct stat, struct stat *stbuf) {
     std::map<std::string, xmlrpc_c::value> info = stat.cvalue();
     
     int dev = value_int(info.at(_dev));
@@ -66,27 +61,21 @@ struct stat *XMLToStat(value_struct stat) {
     int gid = value_int(info.at(_gid));
     int rdev = value_int(info.at(_rdev));
     int size = value_int(info.at(_size));
-    int blksize = value_int(info.at(_blksize));
-    int blocks = value_int(info.at(_blocks));
-    int atime = value_int(info.at(_atime));
+    time_t atime = (time_t) value_int(info.at(_atime));
     int mtime = value_int(info.at(_mtime));
     int ctime = value_int(info.at(_ctime));
     
-    toRet->st_dev = dev;
-    toRet->st_ino = ino;
-    toRet->st_mode = mode;
-    toRet->st_nlink = nlink;
-    toRet->st_uid = uid;
-    toRet->st_gid = gid;
-    toRet->st_rdev = rdev;
-    toRet->st_size = size;
-    toRet->st_blksize = blksize;
-    toRet->st_blocks = blocks;
-    toRet->st_atime = atime;
-    toRet->st_mtime = mtime;
-    toRet->st_ctime = ctime;
-    
-    return toRet;
+    stbuf->st_dev = dev;
+    stbuf->st_ino = ino;
+    stbuf->st_mode = mode;
+    stbuf->st_nlink = nlink;
+    stbuf->st_uid = uid;
+    stbuf->st_gid = gid;
+    stbuf->st_rdev = rdev;
+    stbuf->st_size = size;
+    stbuf->st_atime = atime;
+    stbuf->st_mtime = mtime;
+    stbuf->st_ctime = ctime;
 }
 
 value_struct utimbufToXML(struct utimbuf *buf) {
@@ -117,7 +106,6 @@ char *HooFSRPCClient::readdir(const char *path) {
     try {
         xmlrpc_c::value response;
         ourClient.call(serverURL, _readdir, "s", &response, path);
-        //cout << xmlrpc_c::value_int(response) << endl;
         ret = xmlrpc_c::value_string(response);
     }
     catch (exception const& e) {
@@ -213,10 +201,9 @@ int HooFSRPCClient::release(int fd) {
 }
 
 
-struct stat *HooFSRPCClient::getAttr(const char *path) {
+int HooFSRPCClient::getAttr(const char *path, struct stat *stbuf) {
 
-    //List of attributes to be returned
-    struct stat *ret;
+    
 
     //Call the server to get attributes
     try {
@@ -228,7 +215,21 @@ struct stat *HooFSRPCClient::getAttr(const char *path) {
         
         value_struct res(response);
         
-        ret = XMLToStat(res);
+        XMLToStat(res, stbuf);
+        
+        printf("Stat info");
+        printf("\tst_dev: %d\n", stbuf->st_dev);
+        printf("\tst_rdev: %d\n", stbuf->st_rdev);
+        printf("\tst_ino: %llu\n", stbuf->st_ino);
+        printf("\tst_mode: %d\n", stbuf->st_mode);
+        printf("\tst_nlink: %d\n", stbuf->st_nlink);
+        printf("\tst_uid: %d\n", stbuf->st_uid);
+        printf("\tst_gid: %d\n",stbuf->st_gid);
+        
+        printf("\tst_atime: %s\n", ctime(&stbuf->st_atime));
+        printf("\tst_mtime: %s\n", ctime(&stbuf->st_mtime));
+        printf("\tst_ctime: %s\n", ctime(&stbuf->st_ctime));
+        printf("\tst_size: %lld\n", stbuf->st_size);
     }
     catch (exception const& e) {
         cerr << "Client threw error: " << e.what() << endl;
@@ -236,7 +237,7 @@ struct stat *HooFSRPCClient::getAttr(const char *path) {
         cerr << "Client threw unexpected error." << endl;
     }
 
-    return ret;
+    return 0;
 }
 
 int HooFSRPCClient::setxattr(const char *path, const char *name, const char *value, size_t size, int flags) {

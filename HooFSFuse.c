@@ -54,9 +54,7 @@ static void logMessage(const char *format, ...) {
 static int hoofs_getattr(const char *path, struct stat *stbuf) {
     // Compute the full path name
     printf("getattr\n");
-    logMessage("%s\n", path);
-    stbuf = rpcClient->getAttr(path);
-    return 0;
+    return rpcClient->getAttr(path, stbuf);
 }
 
 static int hoofs_setxattr(const char *path, const char *name, const char *value, size_t size, int flags) {
