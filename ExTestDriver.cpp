@@ -193,10 +193,6 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-<<<<<<< HEAD
-    
-=======
->>>>>>> 2d8f17e3614ec2c1448c59803cf921b828630a97
     listContents(client, "/");
     
     cout << "Changing permissions on file 2 to read/write -> user & group, and nothing for world" << endl;
@@ -207,7 +203,6 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-<<<<<<< HEAD
     
     
     
@@ -220,12 +215,10 @@ int main(int argc, const char * argv[]) {
     
     
     cout << "Removing file fileStuff from directory stuff (Should fail because mkdir unimplemented)" << endl;
-    
-=======
     listContents(client, "/file2", false); //this one fails
 
     cout << "Creating stuff directory with user read/write, group read, and no permission for world" << endl;
-    int success = client.create("/stuff", 0640);
+    success = client.create("/stuff", 0640);
     if (success >= 0) {
         cout << "SUCCESS with value: " << success << endl << endl;
     }
@@ -235,7 +228,6 @@ int main(int argc, const char * argv[]) {
     listContents(client, "/");
 
     cout << "Removing file fileStuff from directory stuff" << endl;
->>>>>>> 2d8f17e3614ec2c1448c59803cf921b828630a97
     success = client.unlink("/stuff/fileStuff");
     
     if (success >= 0) {
