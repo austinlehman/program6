@@ -241,5 +241,21 @@ int main(int argc, const char * argv[]) {
     catch(...) {
         cout << "FAILURE because mkdir unimplemented" << endl << endl;
     }
-    
+
+    cout << "Removing file fileStuff from stuff directory (that does not exist)" << endl;
+    success = client.unlink("/stuff/fileStuff");
+    if (success < 0) {
+        cout << "SUCCESS with failure to remove with value: " << success << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
+    cout << "Listing directory contents of mount" << endl;
+    ls = client.readdir("/");
+    if (strlen(ls) > 0) {
+        cout << "SUCCESS with value: " << (void *) ls << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
 }
