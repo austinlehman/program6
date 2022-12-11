@@ -202,9 +202,48 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
+
     
     
     listContents(client, "/file2", false); //this one fails
     
     
+
+
+    //MIDDLE STUFF
+
+
+    cout << "Removing file fileStuff from stuff directory stuff" << endl;
+    success = client.unlink("/stuff/fileStuff");
+    if (success >= 0) {
+        cout << "SUCCESS with value: " << success << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
+    cout << "Printing stuff directory contents" << endl;
+    char* ls = client.readdir("/stuff");
+    if (strlen(ls) > 0) {
+        cout << "SUCCESS with value: " << (void *) ls << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
+
+    cout << "Removing stuff directory" << endl;
+    success = client.rmdir("/stuff");
+    if (success >= 0) {
+        cout << "SUCCESS with value: " << success << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
+    cout << "Listing directory contents of mount dir AFTER stuff directory removed" << endl;
+    ls = client.readdir("/");
+    if (strlen(ls) > 0) {
+        cout << "SUCCESS with value: " << (void *) ls << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
 }
