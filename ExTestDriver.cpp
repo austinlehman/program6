@@ -191,7 +191,6 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-
     listContents(client, "/");
     
     cout << "Changing permissions on file 2 to read/write -> user & group, and nothing for world" << endl;
@@ -202,16 +201,17 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-
-    
-    
     listContents(client, "/file2", false); //this one fails
-    
-    
 
-
-    //MIDDLE STUFF
-
+    cout << "Creating stuff directory with user read/write, group read, and no permission for world" << endl;
+    int success = client.create("/stuff", 0640);
+    if (success >= 0) {
+        cout << "SUCCESS with value: " << success << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
+    listContents(client, "/");
 
     cout << "Removing file fileStuff from directory stuff" << endl;
     success = client.unlink("/stuff/fileStuff");
