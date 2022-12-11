@@ -43,7 +43,8 @@ int main(int argc, const char * argv[]) {
     
    
     cout << "Creating file1 for user read/write permissions" << endl;
-    int fd = client.create("file1", 0600);
+    client.create("/file1", 0600);
+    int fd = client.open("/file1", O_RDWR);
     cout << "Creation of file1: ";
     if(fd != -1) {
         cout << "SUCCESS with fd: " << fd << endl << endl;
@@ -54,7 +55,7 @@ int main(int argc, const char * argv[]) {
     
     
     cout << "Writing \"yap\" to file1" << endl;
-    int wrote = client.write(fd, 3, 0, "yap");
+    int wrote = client.write(fd, 4, 0, "yap\0");
     cout << "Write of \"yap\" to file1: ";
     if(wrote != 3) {
         cout << "SUCCESS with numBytes: " << wrote << endl << endl;
@@ -75,7 +76,7 @@ int main(int argc, const char * argv[]) {
     
     
     cout << "Opening file1" << endl;
-    fd = client.open("file1", O_RDWR);
+    fd = client.open("/file1", O_RDWR);
     cout << "Open file1: ";
     if(fd != -1) {
         cout << "SUCCESS with value: " << fd << endl << endl;
@@ -86,7 +87,7 @@ int main(int argc, const char * argv[]) {
     
     char buf[5];
     cout << "Reading file1" << endl;
-    string str = client.read(fd, 3, 0);
+    string str = client.read(fd, 4, 0);
     strncpy(buf, str.c_str(), 3);
     cout << "Read: ";
     if(buf[0] == 'y' && buf[1] == 'a' && buf[2] == 'p') {
@@ -107,7 +108,8 @@ int main(int argc, const char * argv[]) {
     }
     
     cout << "Creating file2 for user read/write permissions for user and read only for group/world" << endl;
-    fd = client.create("file2", 0644);
+    client.create("/file2", 0644);
+    fd = client.open("/file2", O_RDWR);
     cout << "Creation of file2: ";
     if(fd != -1) {
         cout << "SUCCESS with fd: " << fd << endl << endl;
