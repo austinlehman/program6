@@ -139,7 +139,7 @@ int main(int argc, const char * argv[]) {
     }
 
     cout << "Changing permissions on file 2 to read/write -> user & group, and nothing for world" << endl;
-    int success = client.chmod(0440);
+    int success = client.chmod("/file2", 0440);
     if (success >= 0) {
         cout << "SUCCESS with value: " << success << endl << endl;
     }
