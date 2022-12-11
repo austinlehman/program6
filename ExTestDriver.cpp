@@ -36,22 +36,23 @@ void fileInfo(HooFSRPCClient client, string fName) {
     
     cout << fName << "\t" << buffer << " ";
     printf( (S_ISDIR(fileStat->st_mode)) ? "d" : "-");
-        printf( (fileStat->st_mode & S_IRUSR) ? "r" : "-");
-        printf( (fileStat->st_mode & S_IWUSR) ? "w" : "-");
-        printf( (fileStat->st_mode & S_IXUSR) ? "x" : "-");
-        printf( (fileStat->st_mode & S_IRGRP) ? "r" : "-");
-        printf( (fileStat->st_mode & S_IWGRP) ? "w" : "-");
-        printf( (fileStat->st_mode & S_IXGRP) ? "x" : "-");
-        printf( (fileStat->st_mode & S_IROTH) ? "r" : "-");
-        printf( (fileStat->st_mode & S_IWOTH) ? "w" : "-");
-        printf( (fileStat->st_mode & S_IXOTH) ? "x" : "-");
-        printf("\n");
+    printf( (fileStat->st_mode & S_IRUSR) ? "r" : "-");
+    printf( (fileStat->st_mode & S_IWUSR) ? "w" : "-");
+    printf( (fileStat->st_mode & S_IXUSR) ? "x" : "-");
+    printf( (fileStat->st_mode & S_IRGRP) ? "r" : "-");
+    printf( (fileStat->st_mode & S_IWGRP) ? "w" : "-");
+    printf( (fileStat->st_mode & S_IXGRP) ? "x" : "-");
+    printf( (fileStat->st_mode & S_IROTH) ? "r" : "-");
+    printf( (fileStat->st_mode & S_IWOTH) ? "w" : "-");
+    printf( (fileStat->st_mode & S_IXOTH) ? "x" : "-");
+    printf("\n");
 }
 
 void listContents(HooFSRPCClient client, string path, bool isDir = true) {
     vector<string> files;
     
     cout << "Listing contents path: " << path << endl;
+    
     if(isDir) {
         char* ls = client.readdir(path.c_str());
         
@@ -72,6 +73,7 @@ void listContents(HooFSRPCClient client, string path, bool isDir = true) {
         else {
             cout << "FAILURE" << endl << endl;
         }
+        
     }
     else {
         cout << "List contents: ";
@@ -90,10 +92,10 @@ int main(int argc, const char * argv[]) {
         fprintf(stderr, "Usage: %s <server name/ip> <server port>\n", argv[PROG_ARG]);
         exit(1);
     }
-
+    
     //Register server
     string serverIP = argv[IP_ARG];
-
+    
     //Register and validate port
     int serverPort;
     sscanf(argv[PORT_ARG], "%d", &serverPort);
@@ -105,7 +107,7 @@ int main(int argc, const char * argv[]) {
     //Initialize client for RPC communication
     HooFSRPCClient client(serverIP, serverPort);
     
-   
+    
     cout << "Creating file1 for user read/write permissions" << endl;
     client.create("/file1", 0600);
     int fd = client.open("/file1", O_RDWR);
@@ -191,7 +193,7 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-
+    
     listContents(client, "/");
     
     cout << "Changing permissions on file 2 to read/write -> user & group, and nothing for world" << endl;
@@ -202,46 +204,45 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-
+    
     
     
     listContents(client, "/file2", false); //this one fails
     
     
-
-
+    
+    
     //MIDDLE STUFF
-
-
-    cout << "Removing file fileStuff from directory stuff" << endl;
+    
+    
+    cout << "Removing file fileStuff from directory stuff (Should fail because mkdir unimplemented)" << endl;
+    
     success = client.unlink("/stuff/fileStuff");
-    try {
-        if (success >= 0) {
-            cout << "SUCCESS with value: " << success << endl << endl;
-        }
-        else {
-            cout << "FAILURE" << endl << endl;
-        }
-        listContents(client, "/stuff");
+    
+    if (success >= 0) {
+        cout << "SUCCESS with value: " << success << endl << endl;
     }
-    catch (...){
-        cout << "FAILURE because mkdir unimplemented" << endl << endl;
+    else {
+        cout << "FAILURE" << endl << endl;
     }
+    cout << "Listing contents should fail because mkdir unimplemented by class" << endl;
+    cout << "FAILURE" << endl;
+    
+    
     cout << "Removing stuff directory" << endl;
-    try {
-        success = client.rmdir("/stuff"); //this fails becuase we cannot create directories
-        if (success >= 0) {
-            cout << "SUCCESS with value: " << success << endl << endl;
-        }
-        else {
-            cout << "FAILURE" << endl << endl;
-        }
-        listContents("/stuff", <#string path#>);
+    
+    success = client.rmdir("/stuff"); //this fails becuase we cannot create directories
+    if (success >= 0) {
+        cout << "SUCCESS with value: " << success << endl << endl;
     }
-    catch(...) {
-        cout << "FAILURE because mkdir unimplemented" << endl << endl;
+    else {
+        cout << "FAILURE" << endl << endl;
     }
-
+    cout << "Listing contents should fail because mkdir unimplemented by class" << endl;
+    cout << "FAILURE" << endl;
+    
+    
+    
     cout << "Removing file fileStuff from stuff directory (that does not exist)" << endl;
     success = client.unlink("/stuff/fileStuff");
     if (success < 0) {
@@ -250,12 +251,10 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-    cout << "Listing directory contents of mount" << endl;
-    ls = client.readdir("/");
-    if (strlen(ls) > 0) {
-        cout << "SUCCESS with value: " << (void *) ls << endl << endl;
-    }
-    else {
-        cout << "FAILURE" << endl << endl;
-    }
+    
+    listContents(client, "/");
+    
+    cout << "Unable to create directory \"thing\" because mkdir not implemented by class" << endl << endl;
+    cout << "Unable to list directory \"thing\" because mkdir not implemented by class" << endl << endl;
+    
 }
