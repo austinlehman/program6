@@ -9,6 +9,7 @@
 //General Includes
 #include <iostream>
 #include <fcntl.h>
+#include <sstream>
 using namespace std;
 
 //RPC Client Include
@@ -21,6 +22,68 @@ const int IP_ARG = 1;
 const int PORT_ARG = 2;
 const int PORTMIN = 0;
 const int PORTMAX = 65535;
+
+void fileInfo(HooFSRPCClient client, string fName) {
+    string valid = "/" + fName;
+    struct stat *fileStat = client.getAttr(valid.c_str());
+    time_t createTime = fileStat->st_ctime;
+    
+    
+    char buffer[26];
+    struct tm *tm_info;
+    tm_info = localtime(&createTime);
+    strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+    
+    cout << fName << "\t" << buffer << " ";
+    printf( (S_ISDIR(fileStat->st_mode)) ? "d" : "-");
+        printf( (fileStat->st_mode & S_IRUSR) ? "r" : "-");
+        printf( (fileStat->st_mode & S_IWUSR) ? "w" : "-");
+        printf( (fileStat->st_mode & S_IXUSR) ? "x" : "-");
+        printf( (fileStat->st_mode & S_IRGRP) ? "r" : "-");
+        printf( (fileStat->st_mode & S_IWGRP) ? "w" : "-");
+        printf( (fileStat->st_mode & S_IXGRP) ? "x" : "-");
+        printf( (fileStat->st_mode & S_IROTH) ? "r" : "-");
+        printf( (fileStat->st_mode & S_IWOTH) ? "w" : "-");
+        printf( (fileStat->st_mode & S_IXOTH) ? "x" : "-");
+        printf("\n");
+}
+
+void listContents(HooFSRPCClient client, string path, bool isDir = true) {
+    vector<string> files;
+    
+    cout << "Listing contents path: " << path << endl;
+    if(isDir) {
+        char* ls = client.readdir(path.c_str());
+        
+        cout << "List contents: ";
+        if(strlen(ls) > 0) {
+            
+            stringstream ss(ls);
+            string s;
+            while (getline(ss, s, ' ')) {
+                files.push_back(s);
+            }
+            
+            for(int i = 0; i < files.size(); i++) {
+                fileInfo(client, files.at(i));
+            }
+            cout << "SUCCESS"<< endl << endl;
+        }
+        else {
+            cout << "FAILURE" << endl << endl;
+        }
+    }
+    else {
+        cout << "List contents: ";
+        try {
+            
+            fileInfo(client, path);
+            cout << "SUCCESS" << endl << endl;
+        } catch(...) {
+            cout << "FAILURE" << endl << endl;
+        }
+    }
+}
 
 int main(int argc, const char * argv[]) {
     if (argc - 1 != NUM_ARGS) {
@@ -129,15 +192,8 @@ int main(int argc, const char * argv[]) {
         cout << "FAILURE" << endl << endl;
     }
 
-    cout << "Listing directory contents" << endl;
-    char* ls = client.readdir("/");
-    if (strlen(ls) > 0) {
-        cout << "SUCCESS with value: " << (void *) ls << endl << endl;
-    }
-    else {
-        cout << "FAILURE" << endl << endl;
-    }
-
+    listContents(client, "/");
+    
     cout << "Changing permissions on file 2 to read/write -> user & group, and nothing for world" << endl;
     int success = client.chmod("/file2", 0440);
     if (success >= 0) {
@@ -146,5 +202,9 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
+    
+    
+    listContents(client, "/file2", false); //this one fails
+    
     
 }
