@@ -5,22 +5,22 @@
 CFLAGS = -Wall -Wextra -Wconversion -Wno-unused-parameter -g `pkg-config fuse --cflags`
 LDFLAGS = `pkg-config fuse --libs`
 
-RPCDIR = $(CURDIR)/xmlrpc-c-1.54.06
+LIB = $(CURDIR)/lib
 INCLUDE = -I. -I$(CURDIR)/include
 
 default: HooFSRPCTestClient HooFSRPCServer HooFSFuse ExTestDriver
 
 HooFSRPCServer: HooFSRPCServer.o
-	gcc -o hoofsrpcserver HooFSRPCServer.o $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_server_abyss.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_server.a $(CURDIR)/xmlrpc-c-1.54.06/lib/abyss/src/libxmlrpc_abyss.a -lssl -lcrypto    $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread
+	gcc -o hoofsrpcserver HooFSRPCServer.o $(LIB)/libxmlrpc_server_abyss.a $(LIB)/libxmlrpc_server.a $(LIB)/libxmlrpc_abyss.a -lssl -lcrypto $(LIB)/libxmlrpc.a $(LIB)/libxmlrpc_xmlparse.a $(LIB)/libxmlrpc_xmltok.a $(LIB)/libxmlrpc_util.a -lpthread
 
 HooFSRPCTestClient: HooFSRPCClient.o HooFSRPCTestDriver.o
-	g++ -std=c++11 -o hoofsrpctestclient HooFSRPCTestDriver.o HooFSRPCClient.o $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_client++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_client.a $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc++.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil++/libxmlrpc_util++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread  -lcurl   $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_packetsocket.a 
+	g++ -std=c++11 -o hoofsrpctestclient HooFSRPCTestDriver.o HooFSRPCClient.o $(LIB)/libxmlrpc_client++.a $(LIB)/libxmlrpc_client.a $(LIB)/libxmlrpc++.a $(LIB)/libxmlrpc_util++.a $(LIB)/libxmlrpc.a $(LIB)/libxmlrpc_xmlparse.a $(LIB)/libxmlrpc_xmltok.a $(LIB)/libxmlrpc_util.a -lpthread  -lcurl   $(LIB)/libxmlrpc_packetsocket.a 
 
 ExTestDriver: ExTestDriver.o HooFSRPCTestDriver.o
-	g++ -std=c++11 -o extestdriver ExTestDriver.o HooFSRPCClient.o $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_client++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_client.a $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc++.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil++/libxmlrpc_util++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread  -lcurl   $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_packetsocket.a 
+	g++ -std=c++11 -o extestdriver ExTestDriver.o HooFSRPCClient.o $(LIB)/libxmlrpc_client++.a $(LIB)/libxmlrpc_client.a $(LIB)/libxmlrpc++.a $(LIB)/libxmlrpc_util++.a $(LIB)/libxmlrpc.a $(LIB)/libxmlrpc_xmlparse.a $(LIB)/libxmlrpc_xmltok.a $(LIB)/libxmlrpc_util.a -lpthread  -lcurl   $(LIB)/libxmlrpc_packetsocket.a 
 
 HooFSFuse: HooFSFuse.o HooFSRPCClient.o
-	g++ -std=c++11 -o hoofsfuse HooFSFuse.o HooFSRPCClient.o -lfuse $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_client++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc_client.a $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc++.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil++/libxmlrpc_util++.a $(CURDIR)/xmlrpc-c-1.54.06/src/libxmlrpc.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmlparse/libxmlrpc_xmlparse.a $(CURDIR)/xmlrpc-c-1.54.06/lib/expat/xmltok/libxmlrpc_xmltok.a $(CURDIR)/xmlrpc-c-1.54.06/lib/libutil/libxmlrpc_util.a -lpthread  -lcurl   $(CURDIR)/xmlrpc-c-1.54.06/src/cpp/libxmlrpc_packetsocket.a 
+	g++ -std=c++11 -o hoofsfuse HooFSFuse.o HooFSRPCClient.o -lfuse $(LIB)/libxmlrpc_client++.a $(LIB)/libxmlrpc_client.a $(LIB)/libxmlrpc++.a $(LIB)/libxmlrpc_util++.a $(LIB)/libxmlrpc.a $(LIB)/libxmlrpc_xmlparse.a $(LIB)/libxmlrpc_xmltok.a $(LIB)/libxmlrpc_util.a -lpthread  -lcurl   $(LIB)/libxmlrpc_packetsocket.a 
 
 HooFSRPCServer.o: HooFSRPCServer.c
 	gcc -c -I. $(INCLUDE) HooFSRPCServer.c

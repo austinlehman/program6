@@ -204,13 +204,6 @@ int main(int argc, const char * argv[]) {
         cout << "FAILURE" << endl << endl;
     }
     
-    
-    
-    listContents(client, "/file2", false); //this one fails
-    
-    
-    
-    
     //MIDDLE STUFF
     
     
