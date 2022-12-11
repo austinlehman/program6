@@ -1,7 +1,0 @@
-Name:        xmlrpc
-Description: Xmlrpc-c basic XML-RPC library
-Version:     1.54.6
-
-Requires: xmlrpc_util xmlrpc_expat
-Libs:     -L/usr/local/lib -lxmlrpc
-Cflags:   -I/usr/local/include
