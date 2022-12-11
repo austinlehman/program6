@@ -1,9 +1,10 @@
-//
-//  ExTestDriver.cpp
-//  p6
-//
-//  Created by Austin Lehman on 12/10/22.
-//
+/************************************************
+ *
+ * Author: Joshua Hunter and Austin Lehman
+ * Assignment: Program 6 & 7
+ * Class: CSI 4337
+ *
+ ************************************************/
 
 //General Includes
 #include <iostream>
@@ -125,7 +126,23 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "FAILURE" << endl << endl;
     }
-    
-    
+
+    cout << "Listing directory contents" << endl;
+    char* ls = client.readdir("/");
+    if (strlen(ls) > 0) {
+        cout << "SUCCESS with value: " << (void *) ls << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
+
+    cout << "Changing permissions on file 2 to read/write -> user & group, and nothing for world" << endl;
+    int success = client.chmod(0440);
+    if (success >= 0) {
+        cout << "SUCCESS with value: " << success << endl << endl;
+    }
+    else {
+        cout << "FAILURE" << endl << endl;
+    }
     
 }
